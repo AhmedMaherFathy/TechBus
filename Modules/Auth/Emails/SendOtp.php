@@ -14,9 +14,10 @@ class SendOtp extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public $otp)
+    public function __construct(public $otp , public $name)
     {
         $this->otp = $otp;
+        $this->name = $name;
         // info($this->otp); die;
     }
 
@@ -26,7 +27,7 @@ class SendOtp extends Mailable
     public function build(): self
     {
         return $this
-                    ->view('otp',[$this->otp])
+                    ->view('otp',[$this->otp, $this->name])
                     ->subject('Your OTP Code') ;
     }
 }
