@@ -27,3 +27,5 @@ Route::post('mobile/user/reset-password', [AuthController::class, 'resetPassword
 // Route::get('otp', function(){
 //     return view('otp');
 // });
+
+Route::post('api/admin/login', [AuthController::class, 'adminLogin']);

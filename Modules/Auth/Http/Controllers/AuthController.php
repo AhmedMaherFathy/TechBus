@@ -19,6 +19,7 @@ class AuthController extends Controller
 {
     use HttpResponse;
 
+
     public function register(UserRegisterRequest $request)
     {
         $validated = $request->validated();
@@ -30,7 +31,7 @@ class AuthController extends Controller
             $lastUser = User::latest('id')->first();
             $nextId = $lastUser ? ((int) (str_replace('U-', '', $lastUser->id)) + 1) : 1;
             $customId = 'U-'.str_pad($nextId, 3, '0', STR_PAD_LEFT);
-
+            // info($customId); die;
             $user = User::create([
                 'custom_id' => $customId,
                 'first_name' => $validated['first_name'],
@@ -84,33 +85,40 @@ class AuthController extends Controller
         return $this->successResponse(message: 'Verified Successfully please login');
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request, $guard = 'web')
     {
         $validated = $request->validated();
+        $guardName = $guard == 'web' ? 'user' : $guard;
+        // Attempt to authenticate the user or admin based on the provided guard
+        if (Auth::guard($guard)->attempt($validated)) {
+            $authUser = Auth::guard($guard)->user();
 
-        // Attempt to find the user by email
-        $user = User::where('email', $validated['email'])->first();
+            // Check if it's a user or admin and verify email verification status for users
+            if ($guard === 'web' && is_null($authUser->email_verified_at)) {
+                return $this->errorResponse(message: 'Please verify your email address before logging in.');
+            }
 
-        // Validate user existence and email verification status
-        if (! $user) {
-            return $this->errorResponse(message: 'Invalid credentials.');
-        }
+            $token = $authUser->createToken($guardName.'-token')->plainTextToken;
 
-        if (is_null($user->email_verified_at)) {
-            return $this->errorResponse(message: 'Please verify your email address before logging in.');
-        }
-
-        // Authenticate the user
-        if (Auth::attempt($validated)) {
-            $authUser = Auth::user();
-            $data = [
-                'user' => $authUser,
-                'token' => $authUser->createToken('mobile')->plainTextToken,
-            ];
-
-            return $this->successResponse(data: $data, message: 'Logged in successfully.');
+            return $this->successResponse(
+                data: [
+                    'user' => $authUser,
+                    'token' => $token,
+                ],
+                message: 'Logged in successfully.',
+            );
         }
 
         return $this->errorResponse(message: 'Invalid credentials.');
+    }
+
+    public function userLogin(LoginRequest $request)
+    {
+        return $this->login($request, 'web');
+    }
+
+    public function adminLogin(LoginRequest $request)
+    {
+        return $this->login($request, 'admin');
     }
 }
