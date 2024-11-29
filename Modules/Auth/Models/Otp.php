@@ -25,14 +25,14 @@ class Otp extends Model
     {
         $otp = rand(1000, 9999);
 
-        $expiresAt = now()->addMinutes(5);
+        $expiresAt = now()->addMinutes(5)->format('Y-m-d H:i:s');
 
-        self::create([
+        $otpRecord = self::create([
             'identifier' => $email,
             'code' => $otp,
             'expires_at' => $expiresAt
         ]);
 
-        return $otp;
+        return $otpRecord;
     }
 }

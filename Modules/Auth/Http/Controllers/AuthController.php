@@ -24,7 +24,13 @@ class AuthController extends Controller
             // $user = null ;
             // $code = null;
             // DB::transaction(function () use ($validated, &$user , &$code) {
+
+            $lastUser = User::latest('id')->first();
+            $nextId = $lastUser ? ( (int)(str_replace('U-', '', $lastUser->id)) + 1) : 1;
+            $customId = 'U-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+            
                 $user = User::create([
+                    'custom_id' => $customId,
                     'first_name' => $validated['first_name'],
                     'last_name' => $validated['last_name'],
                     'phone' => $validated['phone'],
@@ -32,15 +38,23 @@ class AuthController extends Controller
                     'password' => Hash::make($validated['password']),
                 ]);
 
-                $code = Otp::generateOtp($user['email']);
+                $otp = Otp::generateOtp($user['email']);
+                // info($otp->code); die;
             // });
             Mail::to($user->email)->send(new SendOtp(
-                $code,
+                $otp->code,
                 $user['first_name']
             ));
 
 
-            return $this->successResponse(data:['email'=>$user->email],message: 'Registered successfully');
+            return $this->successResponse(data:[
+                'id' => $user->custom_id,
+                'email'=> $user->email,
+                'first_name' => $user['first_name'],
+                'otp_expires_at' => $otp->expires_at
+            ],
+            message: 'Registered successfully');
+
         } catch (\Exception $e) {
             return $this->errorResponse(message: $e->getMessage());
         }

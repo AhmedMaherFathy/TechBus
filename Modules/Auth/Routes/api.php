@@ -21,6 +21,6 @@ use Modules\Auth\Http\Controllers\AuthController;
 Route::post('mobile/user/register', [AuthController::class,'register']);
 Route::post('mobile/user/verify-email',[AuthController::class,'verifyOtp']);
 // Route::get('test',[AuthController::class,'test']);
-// Route::get('otp', function(){
-//     return view('otp');
-// });
+Route::get('otp', function(){
+    return view('otp');
+});
