@@ -6,7 +6,7 @@ use App\Traits\HttpResponse;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class VerifyRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,8 +16,8 @@ class VerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'email|required',
-            'otp' => 'required|digits:4',
+            'email' => 'required',
+            'password' => 'required',
         ];
     }
 

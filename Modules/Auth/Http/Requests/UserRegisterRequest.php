@@ -3,8 +3,8 @@
 namespace Modules\Auth\Http\Requests;
 
 use App\Traits\HttpResponse;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 
 class UserRegisterRequest extends FormRequest
 {
@@ -12,7 +12,7 @@ class UserRegisterRequest extends FormRequest
      * Get the validation rules that apply to the request.
      */
     use HttpResponse;
-    
+
     public function rules(): array
     {
         return [
@@ -30,7 +30,7 @@ class UserRegisterRequest extends FormRequest
                 'regex:/[0-9]/', // Must contain at least one number
             ],
         ];
-        
+
     }
 
     /**
@@ -52,5 +52,4 @@ class UserRegisterRequest extends FormRequest
             'password.regex' => 'The password must contain at least one uppercase letter, one lowercase letter, and one number.',
         ];
     }
-
 }

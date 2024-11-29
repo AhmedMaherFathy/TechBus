@@ -4,9 +4,9 @@ namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
 // use Illuminate\Http\Response;
-use Illuminate\Validation\Validator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 trait HttpResponse
@@ -43,10 +43,10 @@ trait HttpResponse
         mixed $data = null,
         string $message = 'Success',
         int $code = Response::HTTP_OK,
-        bool $showToast = null,
+        ?bool $showToast = null,
         array $additional = [],
     ): JsonResponse {
-        $showToast = !is_null($showToast) ? $showToast : request()->method() != 'GET';
+        $showToast = ! is_null($showToast) ? $showToast : request()->method() != 'GET';
 
         return response()->json(array_merge([
             'data' => $data,
@@ -59,7 +59,7 @@ trait HttpResponse
 
     public function throwValidationException(
         Validator $validator,
-        array $error = null,
+        ?array $error = null,
     ): void {
         $errors = $error ?: $validator->errors()->toArray();
         $errorsKeys = array_keys($errors);
@@ -102,7 +102,7 @@ trait HttpResponse
         $data = null,
         int $status = Response::HTTP_NOT_FOUND,
         string $message = 'Error Occurred',
-        bool $showToast = null,
+        ?bool $showToast = null,
         array $additional = [],
     ): JsonResponse {
         $response = [
@@ -118,5 +118,4 @@ trait HttpResponse
             $response['status']
         );
     }
-
 }

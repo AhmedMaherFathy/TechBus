@@ -2,8 +2,9 @@
 
 namespace Modules\Auth\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 // use Modules\Auth\Database\Factories\OtpFactory;
 
 class Otp extends Model
@@ -13,7 +14,7 @@ class Otp extends Model
     protected $fillable = [
         'identifier',
         'code',
-        'expires_at'
+        'expires_at',
     ];
 
     // protected static function newFactory(): OTPFactory
@@ -30,7 +31,7 @@ class Otp extends Model
         $otpRecord = self::create([
             'identifier' => $email,
             'code' => $otp,
-            'expires_at' => $expiresAt
+            'expires_at' => $expiresAt,
         ]);
 
         return $otpRecord;

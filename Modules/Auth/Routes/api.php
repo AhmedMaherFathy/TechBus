@@ -18,9 +18,12 @@ use Modules\Auth\Http\Controllers\AuthController;
 //     Route::apiResource('auth', AuthController::class)->names('auth');
 // });
 
-Route::post('mobile/user/register', [AuthController::class,'register']);
-Route::post('mobile/user/verify-email',[AuthController::class,'verifyOtp']);
+Route::post('mobile/user/register', [AuthController::class, 'register']);
+Route::post('mobile/user/verify-email', [AuthController::class, 'verifyOtp']);
+Route::post('mobile/user/login', [AuthController::class, 'login']);
+Route::post('mobile/user/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('mobile/user/reset-password', [AuthController::class, 'resetPassword']);
 // Route::get('test',[AuthController::class,'test']);
-Route::get('otp', function(){
-    return view('otp');
-});
+// Route::get('otp', function(){
+//     return view('otp');
+// });
