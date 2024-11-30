@@ -19,7 +19,7 @@ use Modules\Admin\Http\Controllers\AdminController;
 // });
 
 
-Route::prefix('api/admin')->group(function () {
+Route::prefix('admin')->group(function () {
     Route::get('/all', [AdminController::class,'index']);
     Route::post('/store', [AdminController::class,'store']);
 });
