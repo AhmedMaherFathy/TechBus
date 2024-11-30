@@ -49,4 +49,14 @@ class AdminController extends Controller
             return $this->errorResponse(message:"No Admin found");
         }
     }
+
+    public function show($id)
+    {
+        $admin = Admin::find($id);
+
+        if($admin)
+            return $this->successResponse(AdminResource::make($admin),message:"Fetched Successfully");
+        else
+            return $this->successResponse(message:"Admin Not found");
+    }
 }
