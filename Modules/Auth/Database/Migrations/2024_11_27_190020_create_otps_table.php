@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('identifier');
             $table->string('code');
+            // $table->enum('type',['forget','register']);
             $table->dateTime('expires_at');
             $table->timestamps();
         });

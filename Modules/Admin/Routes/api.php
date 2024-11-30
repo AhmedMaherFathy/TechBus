@@ -22,4 +22,5 @@ use Modules\Admin\Http\Controllers\AdminController;
 Route::prefix('admin')->group(function () {
     Route::get('/all', [AdminController::class,'index']);
     Route::post('/store', [AdminController::class,'store']);
+    Route::delete('/delete/{admin}', [AdminController::class,'delete']);
 });

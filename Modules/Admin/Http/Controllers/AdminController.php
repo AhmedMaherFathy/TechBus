@@ -38,4 +38,15 @@ class AdminController extends Controller
         return $this->successResponse(message: 'Admin Created Successfully');
     }
 
+    public function delete($id)
+    {
+        try{
+        $user = Admin::findOrFail($id);
+        $user->delete();
+
+        return $this->successResponse(message:"Admin deleted successfully");
+        }catch(\Exception $e){
+            return $this->errorResponse(message:"No Admin found");
+        }
+    }
 }
