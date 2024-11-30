@@ -12,7 +12,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
-        "APP_URL": "https://pos-weld.vercel.app",
+        "APP_URL": "http://tech-bus-egy.vercel.app",
         "APP_KEY": "base64:30OL3S0S7FYqfIlG71Zji6CFVkXFMxYHDVYrZ0MTRcs=",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
