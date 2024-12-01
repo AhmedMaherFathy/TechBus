@@ -7,8 +7,8 @@ use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Modules\Auth\Emails\forgetPasswordOtp;
-use Modules\Auth\Http\Requests\forgetPasswordRequest;
+use Modules\Auth\Emails\ForgetPasswordOtp;
+use Modules\Auth\Http\Requests\ForgetPasswordRequest;
 use Modules\Auth\Http\Requests\ResetPasswordRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
 use Modules\Auth\Models\Admin;
@@ -18,7 +18,7 @@ class AdminForgetPasswordController extends Controller
 {
     use HttpResponse;
 
-    public function SendOtp(forgetPasswordRequest $request)
+    public function SendOtp(ForgetPasswordRequest $request)
     {
         $validated = $request->validated();
 
@@ -26,7 +26,7 @@ class AdminForgetPasswordController extends Controller
 
         $otp = Otp::generateOtp($user->email);
 
-        Mail::to($user->email)->send(new forgetPasswordOtp(
+        Mail::to($user->email)->send(new ForgetPasswordOtp(
             $otp->code,
             $user['first_name']
         ));
