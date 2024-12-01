@@ -4,6 +4,8 @@ namespace Modules\Auth\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,19 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         parent::boot();
+
+        RateLimiter::for('otp', function ($request) {
+            return Limit::perMinutes(5, 1)
+                ->by($request->input('email'))
+                ->response(function () {
+                    return response()->json([
+                        'data' => null,
+                        'message' => 'You can only request an OTP once every 5 minutes.',
+                        'status' => 429,
+                        'showToast' => true
+                    ], 429);
+                });
+        });
     }
 
     /**

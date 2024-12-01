@@ -28,12 +28,16 @@ class Otp extends Model
 
         $expiresAt = now()->addMinutes(5)->format('Y-m-d H:i:s');
 
-        $otpRecord = self::create([
-            'identifier' => $email,
-            'code' => $otp,
-            'expires_at' => $expiresAt,
-        ]);
-
-        return $otpRecord;
+        $otpRecord = self::updateOrInsert(
+            ['identifier' => $email], // Matching condition
+            [
+                'code' => $otp,
+                'expires_at' => $expiresAt,
+                'updated_at' => now(),
+            ]
+        );
+    
+        // Fetch and return the updated or created record
+        return self::where('identifier', $email)->first();
     }
 }

@@ -40,7 +40,7 @@ Route::prefix('mobile/user')->group(function () {
 Route::post('api/admin/login', [AuthController::class, 'adminLogin']);
 
 Route::prefix('admin/forget-password')->group(function () {
-    Route::post('/', [AdminForgetPasswordController::class, 'SendOtp']);         //mobile/user/forget-password
+    Route::post('/', [AdminForgetPasswordController::class, 'SendOtp'])->middleware('throttle:otp');         //mobile/user/forget-password
     Route::post('verify', [AdminForgetPasswordController::class, 'verifyOtp']);  ///mobile/user/forget-password
     Route::post('reset-password', [AdminForgetPasswordController::class, 'resetPassword']);  ///mobile/user/forget-password/reset-password
 });

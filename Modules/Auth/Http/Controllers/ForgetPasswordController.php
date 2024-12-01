@@ -24,6 +24,10 @@ class ForgetPasswordController extends Controller
 
         $user = User::where('email', $validated['email'])->first();
 
+        if ($user->email_verified_at == null) {
+            return $this->errorResponse(message:'Verify Your Account First');
+        }
+
         $otp = Otp::generateOtp($user->email);
 
         Mail::to($user->email)->send(new forgetPasswordOtp(
