@@ -18,7 +18,7 @@ class ForgetPasswordController extends Controller
 {
     use HttpResponse;
 
-    public function SendOtp(forgetPasswordRequest $request)
+    public function SendOtp(ForgetPasswordRequest $request)
     {
         $validated = $request->validated();
 
