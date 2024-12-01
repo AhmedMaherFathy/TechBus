@@ -56,7 +56,7 @@ class ForgetPasswordController extends Controller
             return $this->errorResponse(message: 'Otp expired');
         }
 
-        $data = DB::table('password_reset_tokens')->updateOrInsert([
+        DB::table('password_reset_tokens')->updateOrInsert([
             'email' => $validated['email'],
         ], [
             'email' => $validated['email'],
@@ -64,9 +64,13 @@ class ForgetPasswordController extends Controller
             'created_at' => now(),
         ]);
 
+        $fetchedData = DB::table('password_reset_tokens')
+        ->where('email', $validated['email'])
+        ->first();
+
         $otpRecord->delete();
 
-        return $this->successResponse(data: $data, message: 'Verified Successfully please reset password');
+        return $this->successResponse(data: $fetchedData, message: 'Verified Successfully please reset password');
     }
 
     public function resetPassword(ResetPasswordRequest $request)
@@ -75,18 +79,18 @@ class ForgetPasswordController extends Controller
         try {
             $updatePassword = DB::table('password_reset_tokens')
                 ->where([
-                    'email' => $validated->email,
-                    'token' => $validated->token,
+                    'email' => $validated['email'],
+                    'token' => $validated['token'],
                 ])
                 ->first();
 
             if (! $updatePassword) {
                 return $this->errorResponse(message: 'Invalid token!');
             }
-            User::query()->where('email', $validated->email)
-                ->update(['password' => Hash::make($validated->new_password)]);
+            User::query()->where('email', $validated['email'])
+                ->update(['password' => Hash::make($validated['token'])]);
 
-            DB::table('password_reset_tokens')->where(['email' => $validated->email])->delete();
+            DB::table('password_reset_tokens')->where(['email' => $validated['email']])->delete();
 
             return $this->successResponse(message: 'Your password has been changed!');
         } catch (\Exception $e) {

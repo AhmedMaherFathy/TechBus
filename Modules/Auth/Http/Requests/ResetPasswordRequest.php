@@ -2,13 +2,17 @@
 
 namespace Modules\Auth\Http\Requests;
 
+use App\Traits\HttpResponse;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
 class ResetPasswordRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
      */
+    use HttpResponse;
+
     public function rules(): array
     {
         return [
@@ -18,7 +22,7 @@ class ResetPasswordRequest extends FormRequest
                 'required',
                 'string',
                 'min:8',
-                'confirmed',
+                // 'confirmed',
                 'regex:/[A-Z]/', // Must contain at least one uppercase letter
                 'regex:/[a-z]/', // Must contain at least one lowercase letter
                 'regex:/[0-9]/', // Must contain at least one number
@@ -33,5 +37,9 @@ class ResetPasswordRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+    public function failedValidation(Validator $validator)
+    {
+        $this->throwValidationException($validator);
     }
 }
