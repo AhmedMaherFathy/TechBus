@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Modules\Auth\Emails\ForgetPasswordOtp;
+use Modules\Auth\Http\Requests\AdminForgetPasswordRequest;
 use Modules\Auth\Http\Requests\ForgetPasswordRequest;
 use Modules\Auth\Http\Requests\ResetPasswordRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
@@ -18,11 +19,11 @@ class AdminForgetPasswordController extends Controller
 {
     use HttpResponse;
 
-    public function SendOtp(ForgetPasswordRequest $request)
+    public function SendOtp(AdminForgetPasswordRequest $request)
     {
         $validated = $request->validated();
-
-        $user = Admin::where('email', $validated['email'])->first();
+        
+        $user = Admin::where('email', $validated['email'])->firstOrFail();
 
         $otp = Otp::generateOtp($user->email);
 
@@ -64,9 +65,13 @@ class AdminForgetPasswordController extends Controller
             'created_at' => now(),
         ]);
 
+        $fetchedData = DB::table('password_reset_tokens')
+        ->where('email', $validated['email'])
+        ->first();
+
         $otpRecord->delete();
 
-        return $this->successResponse(data: $data, message: 'Verified Successfully please reset password');
+        return $this->successResponse(data: $fetchedData, message: 'Verified Successfully please reset password');
     }
 
     public function resetPassword(ResetPasswordRequest $request)
@@ -75,18 +80,18 @@ class AdminForgetPasswordController extends Controller
         try {
             $updatePassword = DB::table('password_reset_tokens')
                 ->where([
-                    'email' => $validated->email,
-                    'token' => $validated->token,
+                    'email' => $validated['email'],
+                    'token' => $validated['token'],
                 ])
                 ->first();
 
             if (! $updatePassword) {
                 return $this->errorResponse(message: 'Invalid token!');
             }
-            Admin::query()->where('email', $validated->email)
-                ->update(['password' => Hash::make($validated->new_password)]);
+            Admin::query()->where('email', $validated['email'])
+                ->update(['password' => Hash::make($validated['new_password'])]);
 
-            DB::table('password_reset_tokens')->where(['email' => $validated->email])->delete();
+            DB::table('password_reset_tokens')->where(['email' => $validated['email']])->delete();
 
             return $this->successResponse(message: 'Your password has been changed!');
         } catch (\Exception $e) {
