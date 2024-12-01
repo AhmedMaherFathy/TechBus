@@ -8,7 +8,7 @@ use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Modules\Auth\Emails\forgetPasswordOtp;
+use Modules\Auth\Emails\ForgetPasswordOtp;
 use Modules\Auth\Http\Requests\ForgetPasswordRequest;
 use Modules\Auth\Http\Requests\ResetPasswordRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
