@@ -4,7 +4,6 @@ namespace Modules\Admin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Traits\HttpResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Modules\Admin\Http\Requests\AdminRequest;
 use Modules\Admin\Transformers\AdminResource;
@@ -20,7 +19,8 @@ class AdminController extends Controller
     public function index()
     {
         $admin = Admin::paginate(10);
-        return $this->paginatedResponse($admin ,AdminResource::class, message:'Admin Fetched Successfully');
+
+        return $this->paginatedResponse($admin, AdminResource::class, message: 'Admin Fetched Successfully');
     }
 
     public function store(AdminRequest $request)
@@ -40,13 +40,13 @@ class AdminController extends Controller
 
     public function delete($id)
     {
-        try{
-        $user = Admin::findOrFail($id);
-        $user->delete();
+        try {
+            $user = Admin::findOrFail($id);
+            $user->delete();
 
-        return $this->successResponse(message:"Admin deleted successfully");
-        }catch(\Exception $e){
-            return $this->errorResponse(message:"No Admin found");
+            return $this->successResponse(message: 'Admin deleted successfully');
+        } catch (\Exception $e) {
+            return $this->errorResponse(message: 'No Admin found');
         }
     }
 
@@ -54,9 +54,10 @@ class AdminController extends Controller
     {
         $admin = Admin::find($id);
 
-        if($admin)
-            return $this->successResponse(AdminResource::make($admin),message:"Fetched Successfully");
-        else
-            return $this->successResponse(message:"Admin Not found");
+        if ($admin) {
+            return $this->successResponse(AdminResource::make($admin), message: 'Fetched Successfully');
+        } else {
+            return $this->successResponse(message: 'Admin Not found');
+        }
     }
 }

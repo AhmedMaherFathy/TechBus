@@ -3,7 +3,6 @@
 namespace Modules\Auth\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -12,9 +11,10 @@ use Modules\Auth\Emails\forgetPasswordOtp;
 use Modules\Auth\Http\Requests\forgetPasswordRequest;
 use Modules\Auth\Http\Requests\ResetPasswordRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
+use Modules\Auth\Models\Admin;
 use Modules\Auth\Models\Otp;
 
-class ForgetPasswordController extends Controller
+class AdminForgetPasswordController extends Controller
 {
     use HttpResponse;
 
@@ -22,7 +22,7 @@ class ForgetPasswordController extends Controller
     {
         $validated = $request->validated();
 
-        $user = User::where('email', $validated['email'])->first();
+        $user = Admin::where('email', $validated['email'])->first();
 
         $otp = Otp::generateOtp($user->email);
 
@@ -83,7 +83,7 @@ class ForgetPasswordController extends Controller
             if (! $updatePassword) {
                 return $this->errorResponse(message: 'Invalid token!');
             }
-            User::query()->where('email', $validated->email)
+            Admin::query()->where('email', $validated->email)
                 ->update(['password' => Hash::make($validated->new_password)]);
 
             DB::table('password_reset_tokens')->where(['email' => $validated->email])->delete();

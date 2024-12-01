@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Auth\Http\Controllers\AdminForgetPasswordController;
 use Modules\Auth\Http\Controllers\AuthController;
 use Modules\Auth\Http\Controllers\ForgetPasswordController;
 
@@ -19,15 +20,27 @@ use Modules\Auth\Http\Controllers\ForgetPasswordController;
 //     Route::apiResource('auth', AuthController::class)->names('auth');
 // });
 
-Route::post('mobile/user/register', [AuthController::class, 'register']);
-Route::post('mobile/user/verify-email', [AuthController::class, 'verifyOtp']);
-Route::post('mobile/user/login', [AuthController::class, 'login']);
-Route::post('mobile/user/forget-password', [ForgetPasswordController::class, 'SendOtp']);
-Route::post('mobile/user/forget-password/verify', [ForgetPasswordController::class, 'verifyOtp']);
-Route::post('mobile/user/forget-password/reset-password', [AuthController::class, 'resetPassword']);
+Route::prefix('mobile/user')->group(function () {
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('verify-email', [AuthController::class, 'verifyOtp']);
+    Route::post('login', [AuthController::class, 'login']);
+
+    Route::prefix('forget-password')->group(function () {
+        Route::post('/', [ForgetPasswordController::class, 'SendOtp']);         //mobile/user/forget-password
+        Route::post('verify', [ForgetPasswordController::class, 'verifyOtp']);  ///mobile/user/forget-password
+        Route::post('reset-password', [ForgetPasswordController::class, 'resetPassword']);  ///mobile/user/forget-password/reset-password
+    });
+});
+
 // Route::get('test',[AuthController::class,'test']);
 // Route::get('otp', function(){
 //     return view('otp');
 // });
 
 Route::post('api/admin/login', [AuthController::class, 'adminLogin']);
+
+Route::prefix('admin/forget-password')->group(function () {
+    Route::post('/', [AdminForgetPasswordController::class, 'SendOtp']);         //mobile/user/forget-password
+    Route::post('verify', [AdminForgetPasswordController::class, 'verifyOtp']);  ///mobile/user/forget-password
+    Route::post('reset-password', [AdminForgetPasswordController::class, 'resetPassword']);  ///mobile/user/forget-password/reset-password
+});

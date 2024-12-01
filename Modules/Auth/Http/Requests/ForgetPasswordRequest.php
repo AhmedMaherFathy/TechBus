@@ -3,8 +3,8 @@
 namespace Modules\Auth\Http\Requests;
 
 use App\Traits\HttpResponse;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 
 class forgetPasswordRequest extends FormRequest
 {
@@ -16,7 +16,7 @@ class forgetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "email" => "required|email|exists:users,email"
+            'email' => 'required|email|exists:users,email',
         ];
     }
 

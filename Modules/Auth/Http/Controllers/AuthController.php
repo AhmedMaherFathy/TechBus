@@ -19,7 +19,6 @@ class AuthController extends Controller
 {
     use HttpResponse;
 
-
     public function register(UserRegisterRequest $request)
     {
         $validated = $request->validated();

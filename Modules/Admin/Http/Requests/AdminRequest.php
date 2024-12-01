@@ -3,8 +3,8 @@
 namespace Modules\Admin\Http\Requests;
 
 use App\Traits\HttpResponse;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 
 class AdminRequest extends FormRequest
 {
@@ -12,7 +12,7 @@ class AdminRequest extends FormRequest
      * Get the validation rules that apply to the request.
      */
     use HttpResponse;
-    
+
     public function rules(): array
     {
         return [

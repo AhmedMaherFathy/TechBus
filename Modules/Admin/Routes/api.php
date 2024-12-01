@@ -18,10 +18,9 @@ use Modules\Admin\Http\Controllers\AdminController;
 //     Route::apiResource('admin', AdminController::class)->names('admin');
 // });
 
-
 Route::prefix('admin')->group(function () {
-    Route::get('/all', [AdminController::class,'index']);
-    Route::post('/store', [AdminController::class,'store']);
-    Route::delete('/delete/{admin}', [AdminController::class,'delete']);
-    Route::get('/show/{admin}', [AdminController::class,'show']);
+    Route::get('/all', [AdminController::class, 'index']);
+    Route::post('/store', [AdminController::class, 'store']);
+    Route::delete('/delete/{admin}', [AdminController::class, 'delete']);
+    Route::get('/show/{admin}', [AdminController::class, 'show']);
 });
