@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Modules\Auth\Emails\SendOtp;
+use Modules\Auth\Events\UserRegistered;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\UserRegisterRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
@@ -27,8 +28,8 @@ class AuthController extends Controller
             // $code = null;
             // DB::transaction(function () use ($validated, &$user , &$code) {
 
-            $lastUser = User::latest('id')->first();
-            $nextId = $lastUser ? ((int) (str_replace('U-', '', $lastUser->id)) + 1) : 1;
+            $lastUser = User::latest('id')->value('id');
+            $nextId = $lastUser ? ($lastUser + 1) : 1;
             $customId = 'U-'.str_pad($nextId, 3, '0', STR_PAD_LEFT);
             // info($customId); die;
             $user = User::create([
@@ -39,14 +40,19 @@ class AuthController extends Controller
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
             ]);
-
+            
             $otp = Otp::generateOtp($user['email']);
             // info($otp->code); die;
             // });
-            Mail::to($user->email)->send(new SendOtp(
-                $otp->code,
-                $user['first_name']
-            ));
+            
+            // dispatch(function () use ($user, $otp) {
+                Mail::to($user->email)->queue(new SendOtp(
+                    $otp->code,
+                    $user['first_name']
+                ));
+            // });
+            // event(new UserRegistered($user->email , $otp->code ,$user['first_name']));
+            // UserRegistered::dispatch($user->email , $otp->code ,$user['first_name']);
 
             return $this->successResponse(data: [
                 'id' => $user->custom_id,
