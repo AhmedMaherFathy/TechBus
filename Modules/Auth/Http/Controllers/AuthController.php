@@ -46,7 +46,7 @@ class AuthController extends Controller
             // });
             
             // dispatch(function () use ($user, $otp) {
-                Mail::to($user->email)->queue(new SendOtp(
+                Mail::to($user->email)->send(new SendOtp(
                     $otp->code,
                     $user['first_name']
                 ));
