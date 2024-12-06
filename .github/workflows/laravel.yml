@@ -27,3 +27,5 @@ jobs:
       run: chmod -R 777 storage public bootstrap/cache
     - name: Optimize
       run: php artisan optimize
+    - name: Run Queue Worker
+      run: php artisan queue:work
