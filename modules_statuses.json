@@ -1,5 +1,6 @@
 {
     "Auth": true,
     "Admin": true,
-    "Place": true
+    "Place": true,
+    "Driver": true
 }
