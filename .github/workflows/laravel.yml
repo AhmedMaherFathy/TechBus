@@ -28,6 +28,6 @@ jobs:
 
 
     # Optional: Run the Laravel Queue Worker (this will run only once during the workflow and won't continue running)
-    - name: Run Queue Worker
-      run: php artisan queue:work --daemon
+    # - name: Run Queue Worker
+    #   run: php artisan queue:work --daemon
       # Be cautious: The '--daemon' flag will make the worker run indefinitely, which might not be ideal for CI/CD.
