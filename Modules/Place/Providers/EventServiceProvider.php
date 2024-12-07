@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Auth\Providers;
+namespace Modules\Place\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -11,11 +11,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [
-        \Modules\Auth\Events\UserRegistered::class => [
-            \Modules\Auth\Listeners\SendOtpRegisteredListener::class,
-            ],
-    ];
+    protected $listen = [];
 
     /**
      * Indicates if events should be discovered.

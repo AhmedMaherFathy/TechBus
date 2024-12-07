@@ -2,9 +2,9 @@ name: Laravel
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   laravel-tests:
@@ -17,13 +17,17 @@ jobs:
         php-version: '8.2'
     - name: Install Dependencies
       run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
-    
+
     - name: Run Artisan Commands
       run: php artisan storage:link
     - name: Publish Cloudinary Config
       run: php artisan vendor:publish --provider="CloudinaryLabs\CloudinaryLaravel\CloudinaryServiceProvider" --tag="cloudinary-laravel-config"
-      
+
     - name: Directory Permissions
       run: chmod -R 777 storage public bootstrap/cache
-    - name: Optimize
-      run: php artisan optimize
+
+
+    # Optional: Run the Laravel Queue Worker (this will run only once during the workflow and won't continue running)
+    # - name: Run Queue Worker
+    #   run: php artisan queue:work --daemon
+      # Be cautious: The '--daemon' flag will make the worker run indefinitely, which might not be ideal for CI/CD.

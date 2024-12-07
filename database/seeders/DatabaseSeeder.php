@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Modules\Auth\Database\Seeders\AdminDatabaseSeeder;
 use Modules\Auth\Models\Admin;
+use Modules\Place\Database\Seeders\PlaceDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,7 +17,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            AdminDatabaseSeeder::class,
+            // AdminDatabaseSeeder::class,
+            PlaceDatabaseSeeder::class
         ]);
 
         // User::factory(10)->create();

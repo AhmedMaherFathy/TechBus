@@ -2,4 +2,6 @@
     "Auth": true,
     "Admin": true,
     "Driver": true
+    "Place": true
+
 }
