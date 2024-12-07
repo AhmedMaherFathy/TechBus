@@ -42,7 +42,6 @@ class AuthController extends Controller
             ]);
             
             $otp = Otp::generateOtp($user['email']);
-            // info($otp->code); die;
             // });
             
             // dispatch(function () use ($user, $otp) {
