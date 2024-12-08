@@ -22,6 +22,7 @@ class DriverResource extends JsonResource
             'phone' => $this->phone,
             'national_id' => $this->national_id,
             'Driver_license' => $this->driver_license,
+            'status' => $this->status,
             'photo' => $imageUrl ?: 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1733608099/mspvvthjcuokw7eiyxo6.png',
         ];
     }
