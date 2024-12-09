@@ -23,6 +23,11 @@ class AdminController extends Controller
         return $this->paginatedResponse($admin, AdminResource::class, message: 'Admin Fetched Successfully');
     }
 
+    public function update($id)
+    {
+        
+    }
+
     public function store(AdminRequest $request)
     {
         $validated = $request->validated();

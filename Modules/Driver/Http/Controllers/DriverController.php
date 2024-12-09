@@ -18,7 +18,7 @@ class DriverController extends Controller
 
     public function index()
     {
-        $driver = Driver::paginate(10);
+        $driver = Driver::fastPaginate(10);
 
         return $this->paginatedResponse($driver, DriverResource::class, message: 'driver Fetched Successfully');
     }
