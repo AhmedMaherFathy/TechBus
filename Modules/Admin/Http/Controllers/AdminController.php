@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Hash;
 use Modules\Admin\Http\Requests\AdminRequest;
+use Modules\Admin\Http\Requests\AdminUpdateRequest;
 use Modules\Admin\Transformers\AdminResource;
 use Modules\Auth\Models\Admin;
 
@@ -23,9 +24,29 @@ class AdminController extends Controller
         return $this->paginatedResponse($admin, AdminResource::class, message: 'Admin Fetched Successfully');
     }
 
-    public function update($id)
+    public function update(AdminUpdateRequest $request , $id)
     {
-        
+        try {
+            // Find the driver by ID
+            $driver = Admin::findOrFail($id);
+
+            $validated = $request->validated();
+
+            if (isset($validated['password'])) {
+                // info("what");die;
+                $validated['password'] = Hash::make($validated['password']);
+            }
+            else{
+                unset($validated['password']);
+            }
+
+            $driver->update($validated);
+
+            return $this->successResponse(AdminResource::make($driver), message: 'Admin updated successfully');
+        } catch (\Exception $e) {
+
+            return $this->errorResponse(message: $e->getMessage());
+        }
     }
 
     public function store(AdminRequest $request)
