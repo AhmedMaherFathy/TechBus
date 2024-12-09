@@ -16,6 +16,7 @@ class DriverRequest extends FormRequest
     {
         $inUpdate = ! preg_match('/.*drivers$/', $this->url());
         $value = $inUpdate ? 'sometimes' : 'required';
+        $password = $inUpdate ? 'nullable' : 'required';
         $ignore = $inUpdate ? ','.$this->route('id') : '';
         // info($this->route('id')); die;
         // info($this); die;
@@ -25,7 +26,7 @@ class DriverRequest extends FormRequest
         'phone'            => $value.'|string|max:20|unique:drivers,phone'.$ignore,
         'national_id'      => $value.'|string|max:20|unique:drivers,national_id'.$ignore,
         'driver_license'   => $value.'|string|unique:drivers,driver_license'.$ignore,
-        'password'         => $value.'|string|min:8',
+        'password'         => $password.'|string|min:8',
         'photo'            => 'sometimes|image|mimes:jpeg,png,jpg,svg|max:2048',
         ];
     }
