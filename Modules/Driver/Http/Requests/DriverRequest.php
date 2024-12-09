@@ -19,7 +19,7 @@ class DriverRequest extends FormRequest
         $password = $inUpdate ? 'nullable' : 'required';
         $ignore = $inUpdate ? ','.$this->route('id') : '';
         // info($this->route('id')); die;
-        // info($this); die;
+        // info($value); die;
         return [
         'full_name'        => $value.'|string|max:255',
         'email'            => $value.'|email|max:255|unique:drivers,email'.$ignore,

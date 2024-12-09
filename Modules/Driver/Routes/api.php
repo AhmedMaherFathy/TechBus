@@ -18,10 +18,10 @@ use Modules\Driver\Http\Controllers\DriverController;
 //     Route::apiResource('driver', DriverController::class)->names('driver');
 // });
 
-Route::prefix('drivers')->group(function() {
-    Route::get('', [DriverController::class, 'index']);
-    Route::get('{id}', [DriverController::class, 'show']);
-    Route::post('', [DriverController::class, 'store']);
-    Route::post('{id}', [DriverController::class, 'update']);
-    Route::delete('{id}', [DriverController::class, 'destroy']);
-});
+// Route::prefix('drivers')->group(function() {
+    Route::get('drivers', [DriverController::class, 'index']);
+    Route::get('drivers/{id}', [DriverController::class, 'show']);
+    Route::post('create/drivers', [DriverController::class, 'store']);
+    Route::post('update/drivers/{id}', [DriverController::class, 'update']);
+    Route::delete('drivers/{id}', [DriverController::class, 'destroy']);
+// });
