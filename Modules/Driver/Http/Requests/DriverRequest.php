@@ -28,6 +28,7 @@ class DriverRequest extends FormRequest
         'driver_license'   => $value.'|string|unique:drivers,driver_license'.$ignore,
         'password'         => $password.'|string|min:8',
         'photo'            => 'sometimes|image|mimes:jpeg,png,jpg,svg|max:2048',
+        'status'           => 'sometimes',
         ];
     }
     /**
