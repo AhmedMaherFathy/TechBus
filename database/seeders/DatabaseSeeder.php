@@ -6,8 +6,10 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Modules\Auth\Database\Seeders\AdminDatabaseSeeder;
-use Modules\Auth\Models\Admin;
+use Modules\Bus\Database\Seeders\BusDatabaseSeeder;
+use Modules\Driver\Database\Seeders\DriverDatabaseSeeder;
 use Modules\Place\Database\Seeders\PlaceDatabaseSeeder;
+use Modules\Ticket\Database\Seeders\TicketDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,18 +20,20 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminDatabaseSeeder::class,
-            PlaceDatabaseSeeder::class
+            PlaceDatabaseSeeder::class,
+            TicketDatabaseSeeder::class,
+            DriverDatabaseSeeder::class,
+            BusDatabaseSeeder::class,
         ]);
 
         User::create([
-            'first_name' => 'user',
-            'last_name' => 'test',
-            'custom_id' => 'U-001',
+            'first_name' => 'kholoud',
+            'last_name' => 'khalid',
+            'custom_id' => 'P-001',
             'email' => 'user@user.com',
             'password' => bcrypt('User1234'),
             'email_verified_at' => now(),
             'phone' =>  '0123456789',
-            
         ]);
     }
 }

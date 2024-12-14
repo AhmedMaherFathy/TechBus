@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('routes', function (Blueprint $table) {
+        Schema::create('user_ticket', function (Blueprint $table) {
             $table->id();
-            $table->string('custom_id')->unique();
-            $table->string('name')->nullable();
-            $table->string('number')->unique();
+            $table->string('user_id');
+            $table->string('ticket_id');
+            $table->foreign('user_id')->references('custom_id')->on('users');
+            $table->foreign('ticket_id')->references('custom_id')->on('tickets');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('routes');
+        Schema::dropIfExists('user_ticket');
     }
 };

@@ -5,6 +5,8 @@ namespace Modules\Driver\Models;
 use CloudinaryLabs\CloudinaryLaravel\MediaAlly;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Bus\Models\Bus;
+
 // use Modules\Driver\Database\Factories\DriverFactory;
 
 class Driver extends Model
@@ -30,4 +32,9 @@ class Driver extends Model
     // {
     //     // return DriverFactory::new();
     // }
+
+    public function bus()
+    {
+        return $this->hasOne(Bus::class);
+    }
 }

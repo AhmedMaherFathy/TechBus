@@ -4,6 +4,8 @@ namespace Modules\Place\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Bus\Models\Bus;
+
 // use Modules\Place\Database\Factories\RouteFactory;
 
 class Route extends Model
@@ -27,5 +29,10 @@ class Route extends Model
     public function stations()
     {
         return $this->belongsToMany(Station::class)->withPivot('order')->withTimestamps();
+    }
+
+    public function buses()
+    {
+        return $this->hasMany(Bus::class);
     }
 }

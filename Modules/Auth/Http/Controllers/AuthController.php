@@ -31,7 +31,7 @@ class AuthController extends Controller
 
             $lastUser = User::latest('id')->value('id');
             $nextId = $lastUser ? ($lastUser + 1) : 1;
-            $customId = 'U-'.str_pad($nextId, 3, '0', STR_PAD_LEFT);
+            $customId = 'P-'.str_pad($nextId, 3, '0', STR_PAD_LEFT);
             // info($customId); die;
             $user = User::create([
                 'custom_id' => $customId,

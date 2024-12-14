@@ -2,5 +2,8 @@
     "Auth": true,
     "Admin": true,
     "Place": true,
-    "Driver": true
+    "Driver": true,
+    "Ticket": true,
+    "Bus": true,
+    "Balance": true
 }

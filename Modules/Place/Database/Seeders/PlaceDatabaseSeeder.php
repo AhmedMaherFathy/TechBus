@@ -74,7 +74,7 @@ class PlaceDatabaseSeeder extends Seeder
         }
 
         // Data for Route 26
-        $route26 = Route::create(['name' => 'Route 26', 'number' => '26']);
+        $route26 = Route::create(['custom_id' =>'R-001','name' => 'Route 26', 'number' => '26']);
         $route26Stations = [
             'بيجام', 'شبرا الخيمه', 'الشارع الجديد', 'مسطرد', 'المطرية', 'الحلمية', 'التجنيد',
             'المحكمة', 'سفير', 'نادي الجلاء', 'السبع عمارات', 'اول عباس', 'اول مكرم',
@@ -86,7 +86,7 @@ class PlaceDatabaseSeeder extends Seeder
         }
 
         // Data for Route 308
-        $route308 = Route::create(['name' => 'Route 308', 'number' => '308']);
+        $route308 = Route::create(['custom_id' =>'R-002','name' => 'Route 308', 'number' => '308']);
         $route308Stations = [
             'الخصوص', 'الشركات', 'مسطرد تحت الكوبري', 'الرشاح', 'التعاون', 'ميدان المطرية',
             'ميدان الحلمية', 'التجنيد', 'محكمة', 'كوبري النزهة', 'ميدان الساعة', 'زهراء مدينة نصر',
