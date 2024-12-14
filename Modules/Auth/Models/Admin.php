@@ -9,7 +9,7 @@ use Modules\Auth\Database\Factories\AdminFactory;
 
 // use Modules\Auth\Database\Factories\AdminFactory;
 
-class Admin extends Authenticatable
+class Admin extends Authenticatable 
 {
     use HasApiTokens, HasFactory;
 
@@ -26,6 +26,8 @@ class Admin extends Authenticatable
     ];
 
     protected $hidden = ['password', 'remember_token'];
+
+    protected $guard = 'admin';
 
     protected static function newFactory(): AdminFactory
     {

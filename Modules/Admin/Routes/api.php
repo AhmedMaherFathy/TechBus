@@ -18,7 +18,7 @@ use Modules\Admin\Http\Controllers\AdminController;
 //     Route::apiResource('admin', AdminController::class)->names('admin');
 // });
 
-Route::prefix('admin')->group(function () {
+Route::group(['prefix' => 'admin', 'middleware' => 'admin.auth'], function () {
     Route::get('/all', [AdminController::class, 'index']);
     Route::post('/store', [AdminController::class, 'store']);
     Route::delete('/delete/{admin}', [AdminController::class, 'delete']);

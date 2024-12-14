@@ -23,7 +23,7 @@ use Modules\Auth\Http\Controllers\ForgetPasswordController;
 Route::prefix('mobile/user')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('verify-email', [AuthController::class, 'verifyOtp']);
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('login', [AuthController::class, 'userLogin']);
 
     Route::prefix('forget-password')->group(function () {
         Route::post('/', [ForgetPasswordController::class, 'SendOtp']);         //mobile/user/forget-password

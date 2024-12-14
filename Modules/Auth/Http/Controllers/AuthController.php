@@ -14,6 +14,7 @@ use Modules\Auth\Events\UserRegistered;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\UserRegisterRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
+use Modules\Auth\Models\Admin;
 use Modules\Auth\Models\Otp;
 
 class AuthController extends Controller
@@ -45,11 +46,12 @@ class AuthController extends Controller
             // });
             
             // dispatch(function () use ($user, $otp) {
+            defer(function() use($user , $otp){
                 Mail::to($user->email)->send(new SendOtp(
                     $otp->code,
                     $user['first_name']
                 ));
-            // });
+            });
             // event(new UserRegistered($user->email , $otp->code ,$user['first_name']));
             // UserRegistered::dispatch($user->email , $otp->code ,$user['first_name']);
 
@@ -89,40 +91,42 @@ class AuthController extends Controller
         return $this->successResponse(message: 'Verified Successfully please login');
     }
 
-    public function login(LoginRequest $request, $guard = 'web')
+    public function login(LoginRequest $request ,$model , $guard = 'web'  )
     {
         $validated = $request->validated();
         $guardName = $guard == 'web' ? 'user' : $guard;
         // Attempt to authenticate the user or admin based on the provided guard
-        if (Auth::guard($guard)->attempt($validated)) {
-            $authUser = Auth::guard($guard)->user();
-
+        $admin = $model::where('email',$validated['email'])->first();
+        // Auth::guard($guard)->attempt($validated)
+        if ($admin && Hash::check($validated['password'], $admin->password)) {
+            // $authUser = Auth::guard($guard)->user();
+            // info($authUser);die;
             // Check if it's a user or admin and verify email verification status for users
-            if ($guard === 'web' && is_null($authUser->email_verified_at)) {
+            if ($guard === 'web' && is_null($admin->email_verified_at)) {
                 return $this->errorResponse(message: 'Please verify your email address before logging in.');
             }
 
-            $token = $authUser->createToken($guardName.'-token')->plainTextToken;
+            $token = $admin->createToken($guardName.'-token')->plainTextToken;
 
             return $this->successResponse(
                 data: [
-                    'user' => $authUser,
+                    'user' => $admin,
                     'token' => $token,
                 ],
                 message: 'Logged in successfully.',
             );
         }
 
-        return $this->errorResponse(message: 'Invalid credentials.');
+        return $this->errorResponse(message: 'Incorrect Email or Password');
     }
 
     public function userLogin(LoginRequest $request)
     {
-        return $this->login($request, 'web');
+        return $this->login($request , User::class , 'web' );
     }
 
     public function adminLogin(LoginRequest $request)
     {
-        return $this->login($request, 'admin');
+        return $this->login($request , Admin::class, 'admin');
     }
 }

@@ -31,7 +31,7 @@ trait HttpResponse
                 'from' => $collection->firstItem(),
                 'last_page' => $collection->lastPage(),
             ],
-            'message' => translate_word($message),
+            'message' => $message,
             'code' => $code,
             'type' => 'success',
         ];

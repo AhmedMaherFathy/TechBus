@@ -17,17 +17,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // AdminDatabaseSeeder::class,
+            AdminDatabaseSeeder::class,
             PlaceDatabaseSeeder::class
         ]);
 
-        // User::factory(10)->create();
-
-        // Admin::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        //     'password' => '1234564897',
-        //     'type' => 0
-        // ]);
+        User::create([
+            'first_name' => 'user',
+            'last_name' => 'test',
+            'custom_id' => 'U-001',
+            'email' => 'user@user.com',
+            'password' => bcrypt('User1234'),
+            'email_verified_at' => now(),
+            'phone' =>  '0123456789',
+            
+        ]);
     }
 }
