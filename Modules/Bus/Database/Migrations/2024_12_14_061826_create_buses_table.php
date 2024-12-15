@@ -16,10 +16,11 @@ return new class extends Migration
             $table->string('plate_number')->unique();
             $table->string('custom_id');
             $table->enum('status',['active','off'])->default('active');
+            $table->string('license')->nullable();
 
-            $table->string('route_id');
-            $table->string('driver_id');
-            $table->string('ticket_id');
+            $table->string('route_id')->nullable();
+            $table->string('ticket_id')->nullable();
+            $table->string('driver_id')->nullable();
 
             $table->foreign('route_id')->references('custom_id')->on('routes')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('driver_id')->references('custom_id')->on('drivers')->onDelete('cascade')->onUpdate('cascade');

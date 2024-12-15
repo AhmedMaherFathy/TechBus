@@ -56,11 +56,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function tickets()
     {
-        return $this->belongsToMany(Ticket::class,'user_ticket');
+        return $this->belongsToMany(Ticket::class,'user_ticket',
+        'ticket_id',   // Foreign key in pivot table pointing to the tickets table
+        'user_id',     // Foreign key in pivot table pointing to the users table
+        'custom_id',   // Local key on the tickets table
+        'custom_id'    // Local key on the users table
+        );
     }
 
     public function balance()
     {
-        return $this->hasOne(Balance::class);
+        return $this->hasOne(Balance::class,'user_id','custom_id');
     }
 }

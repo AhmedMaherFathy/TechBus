@@ -33,6 +33,6 @@ class Route extends Model
 
     public function buses()
     {
-        return $this->hasMany(Bus::class);
+        return $this->hasMany(Bus::class,'route_id','custom_id');
     }
 }

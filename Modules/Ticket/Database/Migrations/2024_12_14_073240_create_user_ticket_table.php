@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('ticket_id');
             $table->foreign('user_id')->references('custom_id')->on('users');
             $table->foreign('ticket_id')->references('custom_id')->on('tickets');
-            $table->timestamps();
+            $table->date('date');
+            $table->time('time');
         });
     }
 

@@ -6,6 +6,7 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Modules\Auth\Database\Seeders\AdminDatabaseSeeder;
+use Modules\Balance\Database\Seeders\BalanceDatabaseSeeder;
 use Modules\Bus\Database\Seeders\BusDatabaseSeeder;
 use Modules\Driver\Database\Seeders\DriverDatabaseSeeder;
 use Modules\Place\Database\Seeders\PlaceDatabaseSeeder;
@@ -18,14 +19,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            AdminDatabaseSeeder::class,
-            PlaceDatabaseSeeder::class,
-            TicketDatabaseSeeder::class,
-            DriverDatabaseSeeder::class,
-            BusDatabaseSeeder::class,
-        ]);
-
         User::create([
             'first_name' => 'kholoud',
             'last_name' => 'khalid',
@@ -35,5 +28,15 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'phone' =>  '0123456789',
         ]);
+
+        $this->call([
+            AdminDatabaseSeeder::class,
+            PlaceDatabaseSeeder::class,
+            TicketDatabaseSeeder::class,
+            DriverDatabaseSeeder::class,
+            BusDatabaseSeeder::class,
+            BalanceDatabaseSeeder::class,
+        ]);
+        
     }
 }

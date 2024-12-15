@@ -2,64 +2,129 @@
 
 namespace Modules\Bus\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Modules\Bus\Models\Bus;
+use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
+use Modules\Place\Models\Route;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Modules\Bus\Http\Requests\BusRequest;
+use Modules\Bus\Transformers\BusResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Modules\Ticket\Models\Ticket;
 
 class BusController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use HttpResponse;
+
     public function index()
     {
-        return view('bus::index');
+        // DB::listen(fn($e)=> info($e->toRawSql()));
+        $buses = Bus::with([
+            'route' => function ($query) {
+                $query->select('id', 'custom_id', 'number');
+            },
+            'driver' => function ($query) {
+                $query->select('id', 'full_name', 'custom_id');
+            },
+            'ticket' => function ($query) {
+                $query->select('id', 'custom_id', 'points');
+            }
+        ])
+            ->paginate(10);
+
+        return $this->paginatedResponse($buses, BusResource::class);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('bus::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Show the specified resource.
-     */
     public function show($id)
     {
-        return view('bus::show');
+        try {
+            $bus = Bus::with([
+                'route' => function ($query) {
+                    $query->select('id', 'custom_id', 'number');
+                },
+                'driver' => function ($query) {
+                    $query->select('id', 'full_name', 'custom_id');
+                },
+                'ticket' => function ($query) {
+                    $query->select('id', 'custom_id', 'points');
+                }
+            ])->where('id', $id)->firstOrFail();
+
+            return $this->successResponse(data: new BusResource($bus));
+        } catch (\Exception) {
+            return $this->errorResponse(message: 'No Bus found');
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function store(BusRequest $request)
     {
-        return view('bus::edit');
+        $validated = $request->validated();
+        $validated['custom_id'] = $this->generateCustomId();
+        $bus = Bus::create($validated);
+        if ($bus)
+            return $this->successResponse(message:"Bus created successfully");
+        else
+            return $this->errorResponse(message: 'Failed to create bus');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
+    public function update(BusRequest $request, $id)
     {
-        //
-    }
+        try {
+            $validated = $request->validated();
 
-    /**
-     * Remove the specified resource from storage.
-     */
+            $bus = Bus::findOrFail($id);
+
+            $bus->update($validated);
+
+            return $this->successResponse(
+                message: 'Bus updated successfully'
+            );
+        } catch (ModelNotFoundException) {
+            return $this->errorResponse(message: 'Bus not found');
+        } catch (\Exception) {
+            return $this->errorResponse(message: 'An error occurred while updating the bus');
+        }
+    }
     public function destroy($id)
     {
-        //
+        try {
+            $bus = Bus::findOrFail($id);
+
+            $bus->delete();
+
+            return $this->successResponse(message: 'Bus deleted successfully');
+        } catch (ModelNotFoundException) {
+            return $this->errorResponse(message: 'Bus not found');
+        } catch (\Exception) {
+            return $this->errorResponse(message: 'An error occurred while deleting the bus');
+        }
     }
+
+    public function generateCustomId()
+    {
+        $lastUser = Bus::latest('id')->value('id');
+        $nextId = $lastUser ? ($lastUser + 1) : 1;
+        $customId = 'B-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+        return $customId;
+    }
+    public function routeSelectMenu()
+    {
+        $routes = Route::select('custom_id')->get();
+        return response()->json($routes);
+    }
+
+    public function ticketSelectMenu()
+    {
+        $tickets = Ticket::select('custom_id')->get();
+        return response()->json($tickets);
+    }
+
+    // public function driverSelectMenu()
+    // {
+    //     $tickets = Ticket::select('custom_id')->get();
+    //     return response()->json($tickets);
+    // }
+
+
 }

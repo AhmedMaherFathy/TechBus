@@ -35,6 +35,6 @@ class Driver extends Model
 
     public function bus()
     {
-        return $this->hasOne(Bus::class);
+        return $this->hasOne(Bus::class,'driver_id','custom_id');
     }
 }

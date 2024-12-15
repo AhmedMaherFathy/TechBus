@@ -18,4 +18,4 @@ use Modules\Ticket\Http\Controllers\TicketController;
 //     Route::apiResource('ticket', TicketController::class)->names('ticket');
 // });
 
-Route::get('mobile/scan/ticket/{qr}',[TicketController::class,'verifyQr']);
+Route::get('mobile/scan/ticket/{qr}',[TicketController::class,'verifyQr'])->middleware(['auth:sanctum']);

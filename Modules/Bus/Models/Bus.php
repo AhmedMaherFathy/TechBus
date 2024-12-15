@@ -21,6 +21,7 @@ class Bus extends Model
         'plate_number',
         'status',
         'custom_id',
+        'license',
         'driver_id',
         'route_id',
         'ticket_id'
@@ -30,19 +31,26 @@ class Bus extends Model
     // {
     //     // return BusFactory::new();
     // }
+
+    public function casts()
+    {
+        return [
+            'created_at' => 'datetime:Y-m-d,h:i:A'
+        ];
+    }
     
     public function route()
     {
-        return $this->belongsTo(Route::class);
+        return $this->belongsTo(Route::class,'route_id','custom_id');
     }
     
     public function driver()
     {
-        return $this->belongsTo(Driver::class);
+        return $this->belongsTo(Driver::class,'driver_id','custom_id');
     }
     
     public function ticket()
     {
-        return $this->belongsTo(Ticket::class);
+        return $this->belongsTo(Ticket::class,'ticket_id','custom_id');
     }
 }

@@ -29,11 +29,17 @@ class Ticket extends Model
 
     public function bus()
     {
-        return $this->hasOne(Bus::class);
+        return $this->hasOne(Bus::class, 'ticket_id', 'custom_id'); // forign Key , value
     }
 
     public function users()
     {
-        return $this->belongsToMany(User::class,'user_ticket');
+        return $this->belongsToMany(User::class,
+                                                'user_ticket',
+                                                'ticket_id',   // Foreign key in pivot table pointing to the tickets table
+                                                'user_id',     // Foreign key in pivot table pointing to the users table
+                                                'custom_id',   // Local key on the tickets table
+                                                'custom_id'    // Local key on the users table
+    );
     }
 }

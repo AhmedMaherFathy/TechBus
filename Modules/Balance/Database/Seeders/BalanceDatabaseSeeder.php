@@ -3,6 +3,7 @@
 namespace Modules\Balance\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Balance\Models\Balance;
 
 class BalanceDatabaseSeeder extends Seeder
 {
@@ -11,6 +12,9 @@ class BalanceDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        Balance::create([
+            'points' => 1000,
+            'user_id' => 'P-001'
+        ]);
     }
 }

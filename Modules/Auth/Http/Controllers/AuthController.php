@@ -93,24 +93,35 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request ,$model , $guard = 'web'  )
     {
+        // DB::listen(fn($e)=> info($e->toRawSql()));
         $validated = $request->validated();
         $guardName = $guard == 'web' ? 'user' : $guard;
-        // Attempt to authenticate the user or admin based on the provided guard
-        $admin = $model::where('email',$validated['email'])->first();
-        // Auth::guard($guard)->attempt($validated)
-        if ($admin && Hash::check($validated['password'], $admin->password)) {
-            // $authUser = Auth::guard($guard)->user();
-            // info($authUser);die;
-            // Check if it's a user or admin and verify email verification status for users
-            if ($guard === 'web' && is_null($admin->email_verified_at)) {
+
+        if($guardName == 'user'){
+            $user = $model::select('id','custom_id' ,'first_name', 'email','password','email_verified_at') 
+                            ->with([
+                                'balance' => function ($query) {
+                                    $query->select('id', 'points', 'user_id'); 
+                                }
+                            ])
+                            ->where('email', $validated['email'])
+                            ->first();
+
+            $data['balance'] = $user->balance;
+        }else{
+            $user = $model::where('email',$validated['email'])->first();
+        }
+
+        if ($user && Hash::check($validated['password'], $user->password)) {
+            if ($guard === 'web' && is_null($user->email_verified_at)) {
                 return $this->errorResponse(message: 'Please verify your email address before logging in.');
             }
-
-            $token = $admin->createToken($guardName.'-token')->plainTextToken;
+            // info($guardName);
+            $token = $user->createToken($guardName.'-token')->plainTextToken;
 
             return $this->successResponse(
                 data: [
-                    'user' => $admin,
+                    'user' => $user,
                     'token' => $token,
                 ],
                 message: 'Logged in successfully.',
