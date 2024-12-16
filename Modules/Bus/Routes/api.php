@@ -23,5 +23,6 @@ Route::middleware('admin.auth')->group(function() {
     Route::get('route/select-menu', [BusController::class, 'routeSelectMenu']);
     Route::get('ticket/select-menu', [BusController::class, 'ticketSelectMenu']);
     Route::get('driver/select-menu', [BusController::class, 'driverSelectMenu']);
+    Route::get('bus/select-menu', [BusController::class, 'busSelectMenu']);
     Route::get('bus/assign-driver-to-bus', [BusController::class, 'assignDriverToBus']);
 });
