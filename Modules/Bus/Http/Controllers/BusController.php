@@ -6,12 +6,13 @@ use Modules\Bus\Models\Bus;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Modules\Place\Models\Route;
+use Modules\Driver\Models\Driver;
+use Modules\Ticket\Models\Ticket;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Modules\Bus\Http\Requests\BusRequest;
 use Modules\Bus\Transformers\BusResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Modules\Ticket\Models\Ticket;
 
 class BusController extends Controller
 {
@@ -120,11 +121,44 @@ class BusController extends Controller
         return response()->json($tickets);
     }
 
-    // public function driverSelectMenu()
-    // {
-    //     $tickets = Ticket::select('custom_id')->get();
-    //     return response()->json($tickets);
-    // }
+    public function busSelectMenu()
+    {
+        $buses = Bus::select('custom_id')->whereNull('driver_id')->get();
+        return response()->json($buses);
+    }
 
+    public function driverSelectMenu()
+    {
+        $drivers = Driver::doesntHave('bus')->select('custom_id')->get();
+        return response()->json($drivers);
+    }
 
+    public function assignDriverToBus(Request $request)
+{
+    $validated = $request->validate([
+        'bus_id' => 'required|exists:buses,custom_id',
+        'driver_id' => 'required|exists:drivers,custom_id',
+    ]);
+
+    // Find a bus where driver_id is NULL
+    $bus = Bus::where('custom_id', $validated['bus_id'])
+                ->whereNull('driver_id')
+                ->first();
+
+    // Return error if no bus is found (either assigned or doesn't exist)
+    if (!$bus) {
+        return $this->errorResponse(message: 'Bus not found or already assigned to a driver');
+    }
+
+    // Find the driver based on custom_id
+    $driver = Driver::where('custom_id', $validated['driver_id'])->first();
+
+    // Assign the driver to the bus
+    $bus->driver_id = $driver->custom_id;
+    $bus->save();
+
+    return $this->successResponse(message: 'Driver assigned to bus successfully');
+}
+
+    
 }
