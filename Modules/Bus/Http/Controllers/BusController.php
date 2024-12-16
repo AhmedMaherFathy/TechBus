@@ -71,20 +71,22 @@ class BusController extends Controller
 
     public function update(BusRequest $request, $id)
     {
+        $validated = $request->validated();
+
         try {
-            $validated = $request->validated();
 
             $bus = Bus::findOrFail($id);
 
             $bus->update($validated);
-
+            
             return $this->successResponse(
+                data: new BusResource($bus),
                 message: 'Bus updated successfully'
             );
         } catch (ModelNotFoundException) {
             return $this->errorResponse(message: 'Bus not found');
-        } catch (\Exception) {
-            return $this->errorResponse(message: 'An error occurred while updating the bus');
+        } catch (\Exception $e) {
+            return $this->errorResponse(message: 'An error occurred while updating the bus '.$e->getMessage());
         }
     }
     public function destroy($id)
