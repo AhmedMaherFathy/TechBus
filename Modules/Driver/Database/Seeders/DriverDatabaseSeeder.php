@@ -23,6 +23,5 @@ class DriverDatabaseSeeder extends Seeder
         // 'photo'            => 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1734164716/axqienltbo49ee3ty81x.jpg',
         'custom_id'        => 'D-001'
         ]);
-        // $driver->media('https://res.cloudinary.com/dnrhne5fh/image/upload/v1734164716/axqienltbo49ee3ty81x.jpg');
     }
 }
