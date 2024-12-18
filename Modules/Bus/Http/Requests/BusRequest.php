@@ -24,7 +24,7 @@ class BusRequest extends FormRequest
             'license' => 'nullable|string',
             'route_id' => 'nullable|string|exists:routes,custom_id',
             'ticket_id' => 'nullable|string|exists:tickets,custom_id',
-            'driver_id' => 'nullable|string|exists:drivers,custom_id'
+            'driver_id' => 'nullable|string|exists:drivers,custom_id|unique:buses,driver_id'.$ignore
         ];
     }
 

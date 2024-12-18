@@ -111,7 +111,7 @@ class BusController extends Controller
         $customId = 'B-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
         return $customId;
     }
-    
+
     public function routeSelectMenu()
     {
         $routes = Route::select('custom_id')->get();
@@ -140,7 +140,7 @@ class BusController extends Controller
     {
         $validated = $request->validate([
             'bus_id' => 'required|exists:buses,custom_id',
-            'driver_id' => 'required|exists:drivers,custom_id',
+            'driver_id' => 'required|exists:drivers,custom_id|unique:buses,driver_id',
         ]);
 
         // Find a bus where driver_id is NULL
