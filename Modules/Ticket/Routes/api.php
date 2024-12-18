@@ -18,4 +18,11 @@ use Modules\Ticket\Http\Controllers\TicketController;
 //     Route::apiResource('ticket', TicketController::class)->names('ticket');
 // });
 
-Route::get('mobile/scan/ticket/{qr}',[TicketController::class,'verifyQr'])->middleware(['auth:sanctum']);
+Route::middleware('admin.auth')->group(function() {
+    Route::get('tickets', [TicketController::class, 'index']);
+    Route::get('tickets/{id}', [TicketController::class, 'show']);
+    Route::post('create/tickets', [TicketController::class, 'store']);
+    Route::patch('update/tickets/{id}', [TicketController::class, 'update']);
+    Route::delete('tickets/{id}', [TicketController::class, 'destroy']);
+    Route::get('mobile/scan/ticket/{qr}',[TicketController::class,'verifyQr']);
+});

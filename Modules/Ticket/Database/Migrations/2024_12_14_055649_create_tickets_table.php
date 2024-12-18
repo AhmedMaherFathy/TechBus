@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('custom_id')->unique();
             $table->string('qr_code')->unique();
-            $table->string('name')->nullable();
             $table->unsignedMediumInteger('points');
             $table->enum('status',['valid','invalid'])->default('valid');
             $table->timestamps();

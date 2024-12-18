@@ -64,7 +64,7 @@ class BusController extends Controller
         $validated['custom_id'] = $this->generateCustomId();
         $bus = Bus::create($validated);
         if ($bus)
-            return $this->successResponse(message:"Bus created successfully");
+            return $this->successResponse(message: "Bus created successfully");
         else
             return $this->errorResponse(message: 'Failed to create bus');
     }
@@ -78,7 +78,7 @@ class BusController extends Controller
             $bus = Bus::findOrFail($id);
 
             $bus->update($validated);
-            
+
             return $this->successResponse(
                 data: new BusResource($bus),
                 message: 'Bus updated successfully'
@@ -86,7 +86,7 @@ class BusController extends Controller
         } catch (ModelNotFoundException) {
             return $this->errorResponse(message: 'Bus not found');
         } catch (\Exception $e) {
-            return $this->errorResponse(message: 'An error occurred while updating the bus '.$e->getMessage());
+            return $this->errorResponse(message: 'An error occurred while updating the bus ' . $e->getMessage());
         }
     }
     public function destroy($id)
@@ -111,6 +111,7 @@ class BusController extends Controller
         $customId = 'B-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
         return $customId;
     }
+    
     public function routeSelectMenu()
     {
         $routes = Route::select('custom_id')->get();
@@ -136,31 +137,29 @@ class BusController extends Controller
     }
 
     public function assignDriverToBus(Request $request)
-{
-    $validated = $request->validate([
-        'bus_id' => 'required|exists:buses,custom_id',
-        'driver_id' => 'required|exists:drivers,custom_id',
-    ]);
+    {
+        $validated = $request->validate([
+            'bus_id' => 'required|exists:buses,custom_id',
+            'driver_id' => 'required|exists:drivers,custom_id',
+        ]);
 
-    // Find a bus where driver_id is NULL
-    $bus = Bus::where('custom_id', $validated['bus_id'])
-                ->whereNull('driver_id')
-                ->first();
+        // Find a bus where driver_id is NULL
+        $bus = Bus::where('custom_id', $validated['bus_id'])
+            ->whereNull('driver_id')
+            ->first();
 
-    // Return error if no bus is found (either assigned or doesn't exist)
-    if (!$bus) {
-        return $this->errorResponse(message: 'Bus not found or already assigned to a driver');
+        // Return error if no bus is found (either assigned or doesn't exist)
+        if (!$bus) {
+            return $this->errorResponse(message: 'Bus not found or already assigned to a driver');
+        }
+
+        // Find the driver based on custom_id
+        $driver = Driver::where('custom_id', $validated['driver_id'])->first();
+
+        // Assign the driver to the bus
+        $bus->driver_id = $driver->custom_id;
+        $bus->save();
+
+        return $this->successResponse(message: 'Driver assigned to bus successfully');
     }
-
-    // Find the driver based on custom_id
-    $driver = Driver::where('custom_id', $validated['driver_id'])->first();
-
-    // Assign the driver to the bus
-    $bus->driver_id = $driver->custom_id;
-    $bus->save();
-
-    return $this->successResponse(message: 'Driver assigned to bus successfully');
-}
-
-    
 }

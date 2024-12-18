@@ -9,7 +9,7 @@ use Modules\Auth\Database\Factories\AdminFactory;
 
 // use Modules\Auth\Database\Factories\AdminFactory;
 
-class Admin extends Authenticatable 
+class Admin extends Authenticatable
 {
     use HasApiTokens, HasFactory;
 

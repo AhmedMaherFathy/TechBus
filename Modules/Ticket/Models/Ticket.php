@@ -16,6 +16,7 @@ class Ticket extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
+        'custom_id',
         'qr_code',
         'name',
         'points',

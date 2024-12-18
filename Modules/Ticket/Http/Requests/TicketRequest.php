@@ -1,30 +1,26 @@
 <?php
 
-namespace Modules\Bus\Http\Requests;
+namespace Modules\Ticket\Http\Requests;
 
 use App\Traits\HttpResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 
-class BusRequest extends FormRequest
+class TicketRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
      */
     use HttpResponse;
-
     public function rules(): array
     {
-        $inUpdate = ! preg_match('/.*buses$/', $this->url());
+        $inUpdate = ! preg_match('/.*tickets$/', $this->url());
         $value = $inUpdate ? 'sometimes' : 'required';
-        $ignore = $inUpdate ? ','.$this->route('id') : '';
+        $ignore = $inUpdate ? ',' . $this->route('id') : '';
         return [
-            'plate_number' => $value.'|string|unique:buses,plate_number'.$ignore,
-            'status' => 'sometimes|string|in:active,off',
-            'license' => 'nullable|string',
-            'route_id' => 'nullable|string|exists:routes,custom_id',
-            'ticket_id' => 'nullable|string|exists:tickets,custom_id',
-            'driver_id' => 'nullable|string|exists:drivers,custom_id'
+            'qr_code'   =>  $value . '|string|unique:tickets,qr_code'.$ignore,
+            'points'    =>  $value . '|integer|min:1',
+            'status'    =>  $value . '|in:valid,invalid',
         ];
     }
 
