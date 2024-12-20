@@ -21,6 +21,8 @@ class Route extends Model
         'custom_id'
     ];
 
+    protected $hidden = ['pivot'];
+
     // protected static function newFactory(): RouteFactory
     // {
     //     // return RouteFactory::new();
@@ -28,8 +30,9 @@ class Route extends Model
 
     public function stations()
     {
-        return $this->belongsToMany(Station::class)->withPivot('order')->withTimestamps();
-    }
+        return $this->belongsToMany(Station::class)
+        ->withPivot('order');
+        }
 
     public function buses()
     {

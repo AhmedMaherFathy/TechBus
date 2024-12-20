@@ -2,41 +2,43 @@
 
 namespace Modules\Place\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Modules\Place\Models\Station;
 use Modules\Place\Models\Zone;
+use Modules\Place\Models\Route;
+use Modules\Place\Models\Station;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Modules\Place\Transformers\RouteResource;
 
 class PlaceController extends Controller
 {
     public function getZone($value)
     {
-        DB::listen(fn($e)=> info($e->toRawSql()));
-        
+        DB::listen(fn($e) => info($e->toRawSql()));
+
         // $zones = cache()->remember("zones_search_{$value}", 600, function() use ($value) {
         //     return Zone::Searchable($value)->get();
         // });  //one solution
 
         $zones = Zone::Searchable($value)->limit(10)->get();  //if does not work on server I should change to s not S
 
-        return response()->json(["data"=>$zones]);
+        return response()->json(["data" => $zones]);
     }
 
     public function getStation($id)
     {
         // DB::listen(fn($e)=> info($e->toRawSql()));
 
-        $stations = Zone::find($id)->stations()->get();        
-        return response()->json(["data"=>$stations]);
+        $stations = Zone::find($id)->stations()->get();
+        return response()->json(["data" => $stations]);
     }
 
     public function getEndStation()
     {
         $stations = Station::all();
-        return response()->json(["data"=>$stations]);
+        return response()->json(["data" => $stations]);
     }
-    
+
     public function getBusNumbers(Request $request)
     {
         $request->validate([
@@ -86,12 +88,17 @@ class PlaceController extends Controller
         }
 
         // Fetch route details
-        $routes = DB::table('routes')
+        $routes = Route::with(['stations' => function ($query) {
+            $query->select('name', 'lat', 'long');
+        }])
             ->whereIn('id', $validRoutes)
-            ->get(['id', 'name', 'number']);
+            ->get(['id', 'name', 'number'])
+            ->each(function ($route) {
+                $route->stations->makeHidden('pivot');
+            });
 
         return response()->json([
-            'data' => $routes,
+            'data' => RouteResource::collection($routes),
         ]);
     }
 }

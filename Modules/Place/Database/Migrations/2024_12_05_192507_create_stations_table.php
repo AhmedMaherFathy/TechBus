@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('custom_id')->nullable();
-            $table->decimal('lat')->nullable();
-            $table->decimal('long')->nullable();
+            $table->double('lat')->nullable();
+            $table->double('long')->nullable();
             $table->foreignId('zone_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
