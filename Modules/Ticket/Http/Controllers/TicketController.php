@@ -7,6 +7,7 @@ use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\Bus\Models\Bus;
 use Modules\Ticket\Http\Requests\TicketRequest;
 use Modules\Ticket\Models\Ticket;
 use Modules\Ticket\Transformers\TicketResource;
@@ -40,12 +41,13 @@ class TicketController extends Controller
                     'user_id' => $user->custom_id,
                     'date' => now()->format('Y-m-d'),
                     'time' => now()->format('H:i:s'),
+                    'payed' => $ticket->points
                 ]);
 
                 $user->balance->points -= $ticket->points;
                 $user->balance->save();
-
-                return $this->successResponse( message: 'Ticket found and attached');
+                $data['points'] = $user->balance->points;
+                return $this->successResponse(data: $data, message: 'Ticket found and attached');
             });
 
             return $response;
@@ -57,15 +59,15 @@ class TicketController extends Controller
     public function index()
     {
         $tickets = Ticket::paginate(10);
-        return $this->paginatedResponse($tickets , TicketResource::class);
+        return $this->paginatedResponse($tickets, TicketResource::class);
     }
 
     public function show($id)
     {
-        try{
+        try {
             $Ticket = Ticket::findOrFail($id);
             return $this->successResponse(new TicketResource($Ticket));
-        }catch (\Exception){
+        } catch (\Exception) {
             return $this->errorResponse(message: 'Ticket not found');
         }
     }
@@ -74,29 +76,29 @@ class TicketController extends Controller
         $validated = $request->validated();
         $validated['custom_id'] = $this->generateCustomId();
         Ticket::create($validated);
-        return $this->successResponse(message:'Ticket Created Successfully');
+        return $this->successResponse(message: 'Ticket Created Successfully');
     }
 
-    public function update(TicketRequest $request,$id)
+    public function update(TicketRequest $request, $id)
     {
         $validated = $request->validated();
 
-        try{
+        try {
             $ticket = Ticket::findOrFail($id);
             $ticket->update($validated);
-            return $this->successResponse(message:'Ticket Updated Successfully');
-        }catch (\Exception){
+            return $this->successResponse(message: 'Ticket Updated Successfully');
+        } catch (\Exception) {
             return $this->errorResponse(message: 'Ticket not found');
         }
     }
 
     public function destroy($id)
     {
-        try{
+        try {
             $ticket = Ticket::findOrFail($id);
             $ticket->delete();
-            return $this->successResponse(message:'Ticket Deleted Successfully');
-        }catch(\Exception){
+            return $this->successResponse(message: 'Ticket Deleted Successfully');
+        } catch (\Exception) {
             return $this->errorResponse(message: 'Ticket not found');
         }
     }
@@ -107,5 +109,28 @@ class TicketController extends Controller
         $nextId = $lastTicket ? ($lastTicket + 1) : 1;
         $customId = 'T-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
         return $customId;
+    }
+
+    public function ticketList()
+    {
+        $date = now()->format('Y-m-d');
+        $ticketCounts = Ticket::select(
+            'tickets.id',
+            'tickets.custom_id',
+            DB::raw("(SELECT COUNT(*) FROM user_ticket WHERE user_ticket.ticket_id = tickets.custom_id AND user_ticket.date = '{$date}') AS total"),
+            DB::raw("(SELECT SUM(payed) FROM user_ticket WHERE user_ticket.ticket_id = tickets.custom_id AND user_ticket.date = '{$date}') AS totalRevenue"),
+            )
+            ->with(['bus:custom_id,ticket_id'])
+            ->lazy()
+            ->filter(function ($ticket) {
+                return $ticket->total > 0; // Filter tickets with non-null and positive total
+            })
+            ->map(function ($ticket) use($date) {
+                $ticket->date = $date;
+                // info($ticket);
+                $ticket['totalRevenue'] = (int)($ticket['totalRevenue']); 
+                return $ticket;
+            });
+        return $this->successResponse($ticketCounts, message: $ticketCounts->isEmpty() ? 'No Tickets list found today': 'Tickets list retrieved successfully');
     }
 }

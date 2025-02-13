@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('ticket_id')->references('custom_id')->on('tickets');
             $table->date('date');
             $table->time('time');
+            $table->unsignedTinyInteger('payed');
         });
     }
 

@@ -24,5 +24,7 @@ Route::middleware('admin.auth')->group(function() {
     Route::post('create/tickets', [TicketController::class, 'store']);
     Route::patch('update/tickets/{id}', [TicketController::class, 'update']);
     Route::delete('tickets/{id}', [TicketController::class, 'destroy']);
-    Route::get('mobile/scan/ticket/{qr}',[TicketController::class,'verifyQr']);
+    Route::get('ticket/list',[TicketController::class,'ticketList']);
 });
+
+Route::get('mobile/scan/ticket/{qr}',[TicketController::class,'verifyQr'])->middleware('user.auth');
