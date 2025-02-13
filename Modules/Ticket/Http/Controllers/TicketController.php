@@ -11,6 +11,7 @@ use Modules\Bus\Models\Bus;
 use Modules\Ticket\Http\Requests\TicketRequest;
 use Modules\Ticket\Models\Ticket;
 use Modules\Ticket\Transformers\TicketResource;
+use Modules\Ticket\Transformers\UserTicketResource;
 use PhpParser\Node\Expr\FuncCall;
 
 class TicketController extends Controller
@@ -134,47 +135,47 @@ class TicketController extends Controller
         return $this->successResponse($ticketCounts, message: $ticketCounts->isEmpty() ? 'No Tickets list found today' : 'Tickets list retrieved successfully');
     }
 
-    // public function UserInvoice()
-    // {
-    //     $customId = Auth::guard('user')->user()->custom_id;
-
-    //     $userInvoices = DB::table('user_ticket')
-    //         ->where('user_id', $customId)
-    //         ->get();
-    //     foreach ($userInvoices as $index => $invoice) {
-    //         $userInvoices[$index]->bus = Bus::where('ticket_id', $invoice->ticket_id)->get('custom_id');
-    //     }
-    //     return $this->successResponse($userInvoices, message: 'Invoices retrieved successfully');
-    // }
     public function UserInvoice()
-{
-    // Get the authenticated user's custom ID
-    $customId = Auth::guard('user')->user()->custom_id;
+    {
+        $customId = Auth::guard('user')->user()->custom_id;
 
-    // Step 1: Fetch all ticket IDs for the user
-    $ticketIds = DB::table('user_ticket')
-        ->where('user_id', $customId)
-        ->pluck('ticket_id'); // Extract only ticket IDs
+        $userInvoices = DB::table('user_ticket')
+            ->where('user_id', $customId)
+            ->get();
+        foreach ($userInvoices as $index => $invoice) {
+            $userInvoices[$index]->bus = Bus::where('ticket_id', $invoice->ticket_id)->with(['Route:custom_id,number'])->get('route_id');
+        }
+        return $this->successResponse($userInvoices, message: 'Invoices retrieved successfully');
+    }
+//     public function UserInvoice()
+// {
+//     // Get the authenticated user's custom ID
+//     $customId = Auth::guard('user')->user()->custom_id;
 
-    // Step 2: Fetch all related buses in a single query
-    $buses = Bus::whereIn('ticket_id', $ticketIds)
-        ->select('ticket_id', 'custom_id') // Select only necessary columns
-        ->get()
-        ->keyBy('ticket_id'); // Create a dictionary-like structure for quick lookup
+//     // Step 1: Fetch all ticket IDs for the user
+//     $ticketIds = DB::table('user_ticket')
+//         ->where('user_id', $customId)
+//         ->pluck('ticket_id'); // Extract only ticket IDs
 
-    // Step 3: Attach the related bus to each invoice
-    $userInvoices = DB::table('user_ticket')
-        ->where('user_id', $customId)
-        ->get() // Fetch all invoices for the user
-        ->map(function ($invoice) use ($buses) {
-            $invoice->bus = $buses->get($invoice->ticket_id)?->custom_id; // Attach bus custom_id
-            return $invoice;
-        });
+//     // Step 2: Fetch all related buses in a single query
+//     $buses = Bus::whereIn('ticket_id', $ticketIds)
+//         ->select('ticket_id', 'custom_id') // Select only necessary columns
+//         ->get()
+//         ->keyBy('ticket_id'); // Create a dictionary-like structure for quick lookup
 
-    // Step 4: Return the response
-    return $this->successResponse(
-        $userInvoices,
-        message: $userInvoices->isEmpty() ? 'No invoices found for the user' : 'Invoices retrieved successfully'
-    );
-}
+//     // Step 3: Attach the related bus to each invoice
+//     $userInvoices = DB::table('user_ticket')
+//         ->where('user_id', $customId)
+//         ->get() // Fetch all invoices for the user
+//         ->map(function ($invoice) use ($buses) {
+//             $invoice->bus = $buses->get($invoice->ticket_id)?->custom_id; // Attach bus custom_id
+//             return $invoice;
+//         });
+
+//     // Step 4: Return the response
+//     return $this->successResponse(
+//         $userInvoices,
+//         message: $userInvoices->isEmpty() ? 'No invoices found for the user' : 'Invoices retrieved successfully'
+//     );
+// }
 }
