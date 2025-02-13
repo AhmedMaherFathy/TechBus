@@ -119,29 +119,62 @@ class TicketController extends Controller
             'tickets.custom_id',
             DB::raw("(SELECT COUNT(*) FROM user_ticket WHERE user_ticket.ticket_id = tickets.custom_id AND user_ticket.date = '{$date}') AS total"),
             DB::raw("(SELECT SUM(payed) FROM user_ticket WHERE user_ticket.ticket_id = tickets.custom_id AND user_ticket.date = '{$date}') AS totalRevenue"),
-            )
+        )
             ->with(['bus:custom_id,ticket_id'])
             ->lazy()
             ->filter(function ($ticket) {
                 return $ticket->total > 0; // Filter tickets with non-null and positive total
             })
-            ->map(function ($ticket) use($date) {
+            ->map(function ($ticket) use ($date) {
                 $ticket->date = $date;
                 // info($ticket);
-                $ticket['totalRevenue'] = (int)($ticket['totalRevenue']); 
+                $ticket['totalRevenue'] = (int)($ticket['totalRevenue']);
                 return $ticket;
             });
-        return $this->successResponse($ticketCounts, message: $ticketCounts->isEmpty() ? 'No Tickets list found today': 'Tickets list retrieved successfully');
+        return $this->successResponse($ticketCounts, message: $ticketCounts->isEmpty() ? 'No Tickets list found today' : 'Tickets list retrieved successfully');
     }
-    
-    public function UserInvoice()
-    {
-        $customId = Auth::guard('user')->user()->custom_id;
-        
-        $userInvoice = DB::table('user_ticket')
-                        ->where('user_id',$customId)
-                        ->get();
 
-    return $this->successResponse($userInvoice,message:'Invoices retrieved successfully');
-    }
+    // public function UserInvoice()
+    // {
+    //     $customId = Auth::guard('user')->user()->custom_id;
+
+    //     $userInvoices = DB::table('user_ticket')
+    //         ->where('user_id', $customId)
+    //         ->get();
+    //     foreach ($userInvoices as $index => $invoice) {
+    //         $userInvoices[$index]->bus = Bus::where('ticket_id', $invoice->ticket_id)->get('custom_id');
+    //     }
+    //     return $this->successResponse($userInvoices, message: 'Invoices retrieved successfully');
+    // }
+    public function UserInvoice()
+{
+    // Get the authenticated user's custom ID
+    $customId = Auth::guard('user')->user()->custom_id;
+
+    // Step 1: Fetch all ticket IDs for the user
+    $ticketIds = DB::table('user_ticket')
+        ->where('user_id', $customId)
+        ->pluck('ticket_id'); // Extract only ticket IDs
+
+    // Step 2: Fetch all related buses in a single query
+    $buses = Bus::whereIn('ticket_id', $ticketIds)
+        ->select('ticket_id', 'custom_id') // Select only necessary columns
+        ->get()
+        ->keyBy('ticket_id'); // Create a dictionary-like structure for quick lookup
+
+    // Step 3: Attach the related bus to each invoice
+    $userInvoices = DB::table('user_ticket')
+        ->where('user_id', $customId)
+        ->get() // Fetch all invoices for the user
+        ->map(function ($invoice) use ($buses) {
+            $invoice->bus = $buses->get($invoice->ticket_id)?->custom_id; // Attach bus custom_id
+            return $invoice;
+        });
+
+    // Step 4: Return the response
+    return $this->successResponse(
+        $userInvoices,
+        message: $userInvoices->isEmpty() ? 'No invoices found for the user' : 'Invoices retrieved successfully'
+    );
+}
 }
