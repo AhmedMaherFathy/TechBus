@@ -27,4 +27,7 @@ Route::middleware('admin.auth')->group(function() {
     Route::get('ticket/list',[TicketController::class,'ticketList']);
 });
 
-Route::get('mobile/scan/ticket/{qr}',[TicketController::class,'verifyQr'])->middleware('user.auth');
+Route::middleware('user.auth')->group(function() {
+    Route::get('mobile/scan/ticket/{qr}',[TicketController::class,'verifyQr']);
+    Route::get('mobile/invoice',[TicketController::class,'userInvoice']);
+});

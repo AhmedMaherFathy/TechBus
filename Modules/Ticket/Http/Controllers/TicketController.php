@@ -133,4 +133,15 @@ class TicketController extends Controller
             });
         return $this->successResponse($ticketCounts, message: $ticketCounts->isEmpty() ? 'No Tickets list found today': 'Tickets list retrieved successfully');
     }
+    
+    public function UserInvoice()
+    {
+        $customId = Auth::guard('user')->user()->custom_id;
+        
+        $userInvoice = DB::table('user_ticket')
+                        ->where('user_id',$customId)
+                        ->get();
+
+    return $this->successResponse($userInvoice,message:'Invoices retrieved successfully');
+    }
 }
