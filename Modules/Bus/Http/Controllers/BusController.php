@@ -50,7 +50,9 @@ class BusController extends Controller
                 'ticket' => function ($query) {
                     $query->select('id', 'custom_id', 'points');
                 }
-            ])->where('id', $id)->firstOrFail();
+            ])->where('id', $id)
+            ->orWhere('custom_id',$id)
+            ->firstOrFail();
 
             return $this->successResponse(data: new BusResource($bus));
         } catch (\Exception) {
