@@ -106,7 +106,9 @@ class AuthController extends Controller
                             ])
                             ->where('email', $validated['email'])
                             ->first();
-
+            if(!$user){
+                return $this->errorResponse(message: 'Incorrect Email or Password');
+            }
             $data['balance'] = $user->balance;
         }else{
             $user = $model::where('email',$validated['email'])->first();

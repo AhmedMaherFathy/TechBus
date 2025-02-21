@@ -97,9 +97,13 @@ class TicketController extends Controller
     {
         try {
             $ticket = Ticket::findOrFail($id);
+            // info($ticket);
+            if($ticket->users()->exists()){
+                return $this->errorResponse(message:'Cannot delete this ticket because it has related bookings.');
+            }
             $ticket->delete();
             return $this->successResponse(message: 'Ticket Deleted Successfully');
-        } catch (\Exception) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
             return $this->errorResponse(message: 'Ticket not found');
         }
     }

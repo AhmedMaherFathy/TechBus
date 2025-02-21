@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('user_id');
             $table->string('ticket_id');
-            $table->foreign('user_id')->references('custom_id')->on('users');
-            $table->foreign('ticket_id')->references('custom_id')->on('tickets');
+            $table->foreign('user_id')->references('custom_id')->on('users')->restrictOnDelete();
+            $table->foreign('ticket_id')->references('custom_id')->on('tickets')->restrictOnDelete();
             $table->date('date');
             $table->time('time');
             $table->unsignedTinyInteger('payed');

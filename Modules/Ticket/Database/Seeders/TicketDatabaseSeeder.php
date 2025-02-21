@@ -20,7 +20,7 @@ class TicketDatabaseSeeder extends Seeder
         [
             'custom_id' => 'T-002',
             'qr_code' => '308-1478',
-            'points' => '14',
+            'points' => '20',
         ],
         [
             'custom_id' => 'T-003',

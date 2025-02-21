@@ -22,9 +22,9 @@ return new class extends Migration
             $table->string('ticket_id')->nullable();
             $table->string('driver_id')->nullable();
 
-            $table->foreign('route_id')->references('custom_id')->on('routes')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('driver_id')->references('custom_id')->on('drivers')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('ticket_id')->references('custom_id')->on('tickets')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('route_id')->references('custom_id')->on('routes')->nullOnDelete()->onUpdate('cascade');
+            $table->foreign('driver_id')->references('custom_id')->on('drivers')->nullOnDelete()->onUpdate('cascade');
+            $table->foreign('ticket_id')->references('custom_id')->on('tickets')->nullOnDelete()->onUpdate('cascade');
             $table->timestamps();
         });
     }
