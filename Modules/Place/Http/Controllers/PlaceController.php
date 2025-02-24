@@ -95,10 +95,10 @@ class PlaceController extends Controller
             ->get(['id', 'name', 'number'])
             ->each(function ($route) {
                 $route->stations->makeHidden('pivot');
-            });
-
+            })->first();
+        $routes['estimated_time'] = count($routes->stations)*7;
         return response()->json([
-            'data' => RouteResource::collection($routes),
+            'data' => RouteResource::make($routes),
         ]);
     }
 }

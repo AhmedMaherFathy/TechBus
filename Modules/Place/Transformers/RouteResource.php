@@ -16,6 +16,7 @@ class RouteResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'number' => $this->number,
+            'estimated_time' => $this->estimated_time."-".($this->estimated_time+5)." min",
             'stations' => $this->stations
         ];
     }
