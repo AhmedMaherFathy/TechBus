@@ -145,7 +145,8 @@ class TicketController extends Controller
 
         $userInvoices = DB::table('user_ticket')
             ->where('user_id', $customId)
-            ->get();
+            ->latest('date')
+            ->cursorPaginate(5);
         foreach ($userInvoices as $index => $invoice) {
             $userInvoices[$index]->bus = Bus::where('ticket_id', $invoice->ticket_id)->with(['Route:custom_id,number'])->get('route_id');
         }

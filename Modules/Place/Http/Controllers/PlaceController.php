@@ -14,7 +14,7 @@ class PlaceController extends Controller
 {
     public function getZone($value)
     {
-        DB::listen(fn($e) => info($e->toRawSql()));
+        // DB::listen(fn($e) => info($e->toRawSql()));
 
         // $zones = cache()->remember("zones_search_{$value}", 600, function() use ($value) {
         //     return Zone::Searchable($value)->get();
