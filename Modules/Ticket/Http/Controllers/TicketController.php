@@ -182,7 +182,7 @@ class TicketController extends Controller
             'bus' => [
                 [
                     'route_id' => $invoice->route_id,
-                    'Route' => [
+                    'route' => [
                         'custom_id' => $invoice->route_custom_id,
                         'number' => $invoice->route_number,
                     ]
