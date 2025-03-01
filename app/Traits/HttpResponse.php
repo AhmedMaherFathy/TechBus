@@ -52,7 +52,7 @@ trait HttpResponse
             'data' => $data,
             'message' => $message,
             'type' => 'success',
-            'code' => $code,
+            'status' => $code,
             'showToast' => $showToast,
         ], $additional), $code);
     }

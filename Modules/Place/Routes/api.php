@@ -20,5 +20,5 @@ use Modules\Place\Http\Controllers\PlaceController;
 
 Route::get('/zones/search/{value}',[PlaceController::class,'getZone']);
 Route::get('/stations/menu/{value}',[PlaceController::class,'getStation']);
-Route::get('/end-stations/menu',[PlaceController::class,'getEndStation']);
+Route::get('/end-stations/menu/{id}',[PlaceController::class,'getEndStation']);
 Route::post('/get-bus-numbers', [PlaceController::class, 'getBusNumbers']);

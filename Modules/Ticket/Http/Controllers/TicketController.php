@@ -98,8 +98,8 @@ class TicketController extends Controller
         try {
             $ticket = Ticket::findOrFail($id);
             // info($ticket);
-            if($ticket->users()->exists()){
-                return $this->errorResponse(message:'Cannot delete this ticket because it has related bookings.');
+            if ($ticket->users()->exists()) {
+                return $this->errorResponse(message: 'Cannot delete this ticket because it has related bookings.');
             }
             $ticket->delete();
             return $this->successResponse(message: 'Ticket Deleted Successfully');
@@ -153,76 +153,76 @@ class TicketController extends Controller
     //     return $this->successResponse($userInvoices, message: 'Invoices retrieved successfully');
     // }
     public function UserInvoice(Request $request)
-{
-    $customId = Auth::guard('user')->user()->custom_id;
+    {
+        $customId = Auth::guard('user')->user()->custom_id;
 
-    $userInvoices = DB::table('user_ticket')
-        ->where('user_id', $customId)
-        ->latest('date')
-        ->leftJoin('buses', 'user_ticket.ticket_id', '=', 'buses.ticket_id')
-        ->leftJoin('routes', 'buses.route_id', '=', 'routes.custom_id')
-        ->select(
-            'user_ticket.*',
-            'buses.route_id',
-            'routes.custom_id as route_custom_id',
-            'routes.number as route_number'
-        )
-        ->cursor(); // Using cursor() instead of get()
+        $userInvoices = DB::table('user_ticket')
+            ->where('user_id', $customId)
+            ->latest('date')
+            ->leftJoin('buses', 'user_ticket.ticket_id', '=', 'buses.ticket_id')
+            ->leftJoin('routes', 'buses.route_id', '=', 'routes.custom_id')
+            ->select(
+                'user_ticket.*',
+                'buses.route_id',
+                'routes.custom_id as route_custom_id',
+                'routes.number as route_number'
+            )
+            ->cursor(); // Using cursor() instead of get()
 
-    // Transform response to maintain structure
-    $formattedInvoices = [];
-    foreach ($userInvoices as $invoice) {
-        $formattedInvoices[] = [
-            'id' => $invoice->id,
-            'user_id' => $invoice->user_id,
-            'ticket_id' => $invoice->ticket_id,
-            'date' => $invoice->date,
-            'time' => $invoice->time,
-            'payed' => $invoice->payed,
-            'bus' => [
-                [
-                    'route_id' => $invoice->route_id,
-                    'route' => [
-                        'custom_id' => $invoice->route_custom_id,
-                        'number' => $invoice->route_number,
+        // Transform response to maintain structure
+        $formattedInvoices = [];
+        foreach ($userInvoices as $invoice) {
+            $formattedInvoices[] = [
+                'id' => $invoice->id,
+                'user_id' => $invoice->user_id,
+                'ticket_id' => $invoice->ticket_id,
+                'date' => $invoice->date,
+                'time' => $invoice->time,
+                'payed' => $invoice->payed,
+                'bus' => [
+                    [
+                        'route_id' => $invoice->route_id,
+                        'route' => [
+                            'custom_id' => $invoice->route_custom_id,
+                            'number' => $invoice->route_number,
+                        ]
                     ]
-                ]
-            ],
-        ];
+                ],
+            ];
+        }
+
+        return $this->successResponse($formattedInvoices, message: 'Invoices retrieved successfully');
     }
 
-    return $this->successResponse($formattedInvoices, message: 'Invoices retrieved successfully');
-}
+    //     public function UserInvoice()
+    // {
+    //     // Get the authenticated user's custom ID
+    //     $customId = Auth::guard('user')->user()->custom_id;
 
-//     public function UserInvoice()
-// {
-//     // Get the authenticated user's custom ID
-//     $customId = Auth::guard('user')->user()->custom_id;
+    //     // Step 1: Fetch all ticket IDs for the user
+    //     $ticketIds = DB::table('user_ticket')
+    //         ->where('user_id', $customId)
+    //         ->pluck('ticket_id'); // Extract only ticket IDs
 
-//     // Step 1: Fetch all ticket IDs for the user
-//     $ticketIds = DB::table('user_ticket')
-//         ->where('user_id', $customId)
-//         ->pluck('ticket_id'); // Extract only ticket IDs
+    //     // Step 2: Fetch all related buses in a single query
+    //     $buses = Bus::whereIn('ticket_id', $ticketIds)
+    //         ->select('ticket_id', 'custom_id') // Select only necessary columns
+    //         ->get()
+    //         ->keyBy('ticket_id'); // Create a dictionary-like structure for quick lookup
 
-//     // Step 2: Fetch all related buses in a single query
-//     $buses = Bus::whereIn('ticket_id', $ticketIds)
-//         ->select('ticket_id', 'custom_id') // Select only necessary columns
-//         ->get()
-//         ->keyBy('ticket_id'); // Create a dictionary-like structure for quick lookup
+    //     // Step 3: Attach the related bus to each invoice
+    //     $userInvoices = DB::table('user_ticket')
+    //         ->where('user_id', $customId)
+    //         ->get() // Fetch all invoices for the user
+    //         ->map(function ($invoice) use ($buses) {
+    //             $invoice->bus = $buses->get($invoice->ticket_id)?->custom_id; // Attach bus custom_id
+    //             return $invoice;
+    //         });
 
-//     // Step 3: Attach the related bus to each invoice
-//     $userInvoices = DB::table('user_ticket')
-//         ->where('user_id', $customId)
-//         ->get() // Fetch all invoices for the user
-//         ->map(function ($invoice) use ($buses) {
-//             $invoice->bus = $buses->get($invoice->ticket_id)?->custom_id; // Attach bus custom_id
-//             return $invoice;
-//         });
-
-//     // Step 4: Return the response
-//     return $this->successResponse(
-//         $userInvoices,
-//         message: $userInvoices->isEmpty() ? 'No invoices found for the user' : 'Invoices retrieved successfully'
-//     );
-// }
+    //     // Step 4: Return the response
+    //     return $this->successResponse(
+    //         $userInvoices,
+    //         message: $userInvoices->isEmpty() ? 'No invoices found for the user' : 'Invoices retrieved successfully'
+    //     );
+    // }
 }

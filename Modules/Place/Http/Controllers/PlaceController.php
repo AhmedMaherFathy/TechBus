@@ -33,11 +33,17 @@ class PlaceController extends Controller
         return response()->json(["data" => $stations]);
     }
 
-    public function getEndStation()
+
+    public function getEndStation($id)
     {
-        $stations = Station::all();
-        return response()->json(["data" => $stations]);
+        // $routesId =DB::table('route_station')
+        //                     ->where('station_id',$id)
+        //                     ->pluck('route_id');
+        // $stations = DB::table('route_station')
+        $routesId = Station::all();
+        return response()->json(["data" => $routesId]);
     }
+
 
     public function getBusNumbers(Request $request)
     {
