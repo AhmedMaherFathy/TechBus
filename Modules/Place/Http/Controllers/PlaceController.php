@@ -34,14 +34,20 @@ class PlaceController extends Controller
     }
 
 
-    public function getEndStation($id)
+    public function getEndStation($stationId)
     {
-        // $routesId =DB::table('route_station')
-        //                     ->where('station_id',$id)
-        //                     ->pluck('route_id');
-        // $stations = DB::table('route_station')
-        $routesId = Station::all();
-        return response()->json(["data" => $routesId]);
+        $relatedStations = DB::table('stations')
+            ->join('route_station', 'stations.id', '=', 'route_station.station_id')
+            ->join('routes', 'route_station.route_id', '=', 'routes.id')
+            ->join('route_station as rs2', 'routes.id', '=', 'rs2.route_id')
+            ->join('stations as related_stations', 'rs2.station_id', '=', 'related_stations.id')
+            ->where('stations.id', $stationId)
+            ->select('related_stations.*')
+            ->distinct()
+            ->get();
+
+        // $routesId = Station::all();
+        return response()->json(["data" => $relatedStations]);
     }
 
 
