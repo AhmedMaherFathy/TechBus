@@ -46,7 +46,6 @@ class PlaceController extends Controller
             ->distinct()
             ->get();
 
-        // $routesId = Station::all();
         return response()->json(["data" => $relatedStations]);
     }
 

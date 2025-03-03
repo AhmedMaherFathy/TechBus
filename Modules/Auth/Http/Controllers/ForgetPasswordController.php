@@ -88,12 +88,12 @@ class ForgetPasswordController extends Controller
                 ])
                 ->first();
 
-            if (! $updatePassword) {
+                if (! $updatePassword) {
                 return $this->errorResponse(message: 'Invalid token!');
             }
             User::query()->where('email', $validated['email'])
-                ->update(['password' => Hash::make($validated['token'])]);
-
+                ->update(['password' => Hash::make($validated['new_password'])]);
+            
             DB::table('password_reset_tokens')->where(['email' => $validated['email']])->delete();
 
             return $this->successResponse(message: 'Your password has been changed!');
