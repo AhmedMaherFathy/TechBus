@@ -36,6 +36,10 @@ class PlaceController extends Controller
 
     public function getEndStation($stationId)
     {
+        if(!isset($stationId)){
+            return response()->json(["data" =>null]);
+        }
+        
         $relatedStations = DB::table('stations')
             ->join('route_station', 'stations.id', '=', 'route_station.station_id')
             ->join('routes', 'route_station.route_id', '=', 'routes.id')
