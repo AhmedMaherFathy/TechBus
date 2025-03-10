@@ -2,13 +2,14 @@
 
 namespace Modules\Admin\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Traits\HttpResponse;
+use Modules\Auth\Models\Admin;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Modules\Admin\Http\Requests\AdminRequest;
-use Modules\Admin\Http\Requests\AdminUpdateRequest;
 use Modules\Admin\Transformers\AdminResource;
-use Modules\Auth\Models\Admin;
+use Modules\Admin\Http\Requests\AdminUpdateRequest;
 
 class AdminController extends Controller
 {
@@ -81,6 +82,10 @@ class AdminController extends Controller
     {
         try {
             $user = Admin::findOrFail($id);
+            // info(Auth::guard('admin')->user()->id);die;
+            if (Auth::guard('admin')->user()->id === $user->id) {
+                return $this->errorResponse(message: 'You cannot delete your own account.');
+            }
             $user->delete();
 
             return $this->successResponse(message: 'Admin deleted successfully');
