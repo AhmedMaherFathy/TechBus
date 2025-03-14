@@ -68,7 +68,7 @@ class TicketController extends Controller
         try {
             $Ticket = Ticket::findOrFail($id);
             return $this->successResponse(new TicketResource($Ticket));
-        } catch (\Exception) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
             return $this->errorResponse(message: 'Ticket not found');
         }
     }

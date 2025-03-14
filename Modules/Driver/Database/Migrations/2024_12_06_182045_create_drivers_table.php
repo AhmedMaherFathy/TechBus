@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('driver_license')->unique();
             $table->string('password');
             $table->enum('status', ['active', 'off', 'standby'])->default('active');
+            $table->double('lat')->nullable();
+            $table->double('long')->nullable();
             $table->timestamps();
         });
     }

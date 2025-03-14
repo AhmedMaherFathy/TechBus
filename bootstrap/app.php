@@ -1,13 +1,15 @@
 <?php
 
+use App\Exceptions\Handler;
+use Illuminate\Foundation\Application;
 use App\Http\Middleware\AlwaysAcceptJson;
 use App\Http\Middleware\LocaleMiddleware;
-use Illuminate\Foundation\Application;
+use Modules\Auth\Http\Middleware\UserMiddleware;
+use Modules\Auth\Http\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Modules\Auth\Http\Middleware\AdminMiddleware;
-use Modules\Auth\Http\Middleware\UserMiddleware;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -29,5 +31,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $httpResponse = (new class
+        {
+            use \App\Traits\HttpResponse;
+        });
+
+        $exceptions->render(function (ModelNotFoundException|NotFoundHttpException $e, $request) use($httpResponse) {
+            return $httpResponse->errorResponse(message: 'Model NOT found');
+        });
     })->create();

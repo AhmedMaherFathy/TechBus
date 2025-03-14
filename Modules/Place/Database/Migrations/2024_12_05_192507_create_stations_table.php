@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('stations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('custom_id')->nullable();
-            $table->double('lat')->nullable();
-            $table->double('long')->nullable();
-            $table->foreignId('zone_id')->constrained()->onDelete('cascade');
+            $table->string('custom_id');
+            $table->double('lat');
+            $table->double('long');
+            $table->foreignId('zone_id')->constrained('zones')->cascadeOnDelete();
             $table->timestamps();
         });
     }

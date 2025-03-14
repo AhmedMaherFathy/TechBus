@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Place\Http\Controllers\ZoneController;
 use Modules\Place\Http\Controllers\PlaceController;
 
 /*
@@ -22,3 +23,11 @@ Route::get('/zones/search/{value}',[PlaceController::class,'getZone']);
 Route::get('/stations/menu/{value}',[PlaceController::class,'getStation']);
 Route::get('/end-stations/menu/{id}',[PlaceController::class,'getEndStation']);
 Route::post('/get-bus-numbers', [PlaceController::class, 'getBusNumbers']);
+
+Route::prefix('dashboard/zones')->middleware('admin.auth')->group(function(){
+    Route::get('',[ZoneController::class,'index']);
+    Route::get('{zone}',[ZoneController::class,'show']);
+    Route::post('',[ZoneController::class,'store']);
+    Route::put('{zone}',[ZoneController::class,'update']);
+    Route::delete('{zone}',[ZoneController::class,'destroy']);
+});

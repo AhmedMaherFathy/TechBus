@@ -25,9 +25,12 @@ class Driver extends Model
         'status',
         'national_id',
         'driver_license',
+        'lat',
+        'long',
     ];
 
     protected $hidden = ['password'];
+
     // protected static function newFactory(): DriverFactory
     // {
     //     // return DriverFactory::new();

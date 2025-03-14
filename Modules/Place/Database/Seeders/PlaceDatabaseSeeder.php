@@ -32,8 +32,10 @@ class PlaceDatabaseSeeder extends Seeder
         ];
 
         $zoneModels = [];
-        foreach ($zones as $zoneName) {
-            $zoneModels[$zoneName] = Zone::create(['name' => $zoneName]);
+        
+        foreach ($zones as $index => $zoneName) {
+            $zoneId = 'Z-' . str_pad($index + 1, 3, '0', STR_PAD_LEFT); // Format zone ID
+            $zoneModels[$zoneName] = Zone::create(['custom_id' => $zoneId, 'name' => $zoneName]);
         }
 
         // Define all stations
@@ -69,7 +71,9 @@ class PlaceDatabaseSeeder extends Seeder
         ];
 
         $stationModels = [];
-        foreach ($stations as $station) {
+        foreach ($stations as $index => $station) {
+            $customId = 'S-' . str_pad($index + 1, 3, '0', STR_PAD_LEFT);
+            $station['custom_id'] = $customId;
             $stationModels[$station['name']] = Station::create($station);
         }
 

@@ -15,7 +15,8 @@ class Zone extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'name'
+        'name',
+        'custom_id'
     ];
 
     // protected static function newFactory(): ZoneFactory

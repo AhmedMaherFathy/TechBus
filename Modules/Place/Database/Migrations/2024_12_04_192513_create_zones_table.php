@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('zones', function (Blueprint $table) {
             $table->id();
+            $table->string('custom_id');
             $table->string('name');
             $table->timestamps();
         });
