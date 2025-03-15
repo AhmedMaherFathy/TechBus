@@ -6,20 +6,22 @@ use App\Traits\HttpResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 
-class ZoneRequest extends FormRequest
+
+class StationRequest extends FormRequest
 {
     use HttpResponse;
-    
+
     public function rules(): array
     {
+        $inUpdate = $this->isMethod('put') ? 'sometimes' : 'required';
         return [
-            'name' => 'required|unique:zones,name,'.$this->route('zone'),
+            'name' => "$inUpdate|string|unique:stations,name,".$this->route('station'),
+            'lat' => "$inUpdate|numeric",
+            'long' => "$inUpdate|numeric",
+            'zone_id' => "$inUpdate|numeric|exists:zones,id"
         ];
     }
 
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
