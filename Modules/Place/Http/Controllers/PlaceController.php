@@ -20,7 +20,7 @@ class PlaceController extends Controller
         //     return Zone::Searchable($value)->get();
         // });  //one solution
 
-        $zones = Zone::Searchable($value)->limit(10)->get();
+        $zones = Zone::Searchable($value)->limit(10)->get(['id','custom_id','name']);
 
         return response()->json(["data" => $zones]);
     }
