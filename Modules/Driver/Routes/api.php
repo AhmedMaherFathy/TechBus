@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Driver\Http\Controllers\DriverController;
+use Modules\Driver\Http\Controllers\TrackingController;
 
 /*
  *--------------------------------------------------------------------------
@@ -24,4 +25,10 @@ Route::middleware('admin.auth')->group(function() {
     Route::post('create/drivers', [DriverController::class, 'store']);
     Route::post('update/drivers/{id}', [DriverController::class, 'update']);
     Route::delete('drivers/{id}', [DriverController::class, 'destroy']);
+});
+
+//Driver App 
+// ->middleware('user.auth')
+Route::prefix('mobile')->group(function(){
+    Route::put('update-driver-location/{driver}',[TrackingController::class,'updateDriverLocation']);
 });

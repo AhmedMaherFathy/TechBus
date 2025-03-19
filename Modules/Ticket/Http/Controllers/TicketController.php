@@ -158,7 +158,6 @@ class TicketController extends Controller
 
         $userInvoices = DB::table('user_ticket')
             ->where('user_id', $customId)
-            ->latest('date')
             ->leftJoin('buses', 'user_ticket.ticket_id', '=', 'buses.ticket_id')
             ->leftJoin('routes', 'buses.route_id', '=', 'routes.custom_id')
             ->select(
@@ -167,7 +166,9 @@ class TicketController extends Controller
                 'routes.custom_id as route_custom_id',
                 'routes.number as route_number'
             )
-            ->cursor(); // Using cursor() instead of get()
+            ->orderByDesc(DB::raw("STR_TO_DATE(CONCAT(date, ' ', time), '%Y-%m-%d %H:%i:%s')"))
+            ->cursor();
+
 
         // Transform response to maintain structure
         $formattedInvoices = [];
