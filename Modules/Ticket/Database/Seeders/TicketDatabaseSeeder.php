@@ -12,7 +12,8 @@ class TicketDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Ticket::insert([[
+        Ticket::insert([
+        [
             'custom_id' => 'T-001',
             'qr_code' => '26-1234',
             'points' => '14',
@@ -26,7 +27,17 @@ class TicketDatabaseSeeder extends Seeder
             'custom_id' => 'T-003',
             'qr_code' => '26-2222',
             'points' => '14',
-        ]]
-    );
+        ],
+        [
+            'custom_id' => 'T-004',
+            'qr_code' => '18-1598',
+            'points' => '21',
+        ],
+        [
+            'custom_id' => 'T-005',
+            'qr_code' => '50-1748',
+            'points' => '10',
+        ],
+    ]);
     }
 }
