@@ -2,20 +2,22 @@
 
 namespace Modules\Auth\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\HttpResponse;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Modules\Auth\Models\Otp;
+use Modules\Auth\Models\Admin;
+use Modules\Auth\Emails\SendOtp;
+use Modules\Driver\Models\Driver;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Modules\Auth\Emails\SendOtp;
 use Modules\Auth\Events\UserRegistered;
 use Modules\Auth\Http\Requests\LoginRequest;
-use Modules\Auth\Http\Requests\UserRegisterRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
-use Modules\Auth\Models\Admin;
-use Modules\Auth\Models\Otp;
+use Modules\Auth\Http\Requests\UserRegisterRequest;
 
 class AuthController extends Controller
 {
@@ -141,5 +143,35 @@ class AuthController extends Controller
     public function adminLogin(LoginRequest $request)
     {
         return $this->login($request , Admin::class, 'admin');
+    }
+
+    public function driverLogin(LoginRequest $request)
+    {
+        return $this->login($request , Driver::class, 'driver');
+    }
+
+    public function logout(Request $request, $guard)
+    {
+        $user = $request->user($guard);
+        
+        $user->currentAccessToken()->delete();
+        //$user->tokens()->delete();  //lo 3aiz a3ml logout mn kl el aghza 
+
+        return $this->successResponse(message: 'Logged out successfully');
+    }
+
+    public function userLogout(Request $request)
+    {
+        return $this->logout($request, 'user');
+    }
+
+    public function adminLogout(Request $request)
+    {
+        return $this->logout($request, 'admin');
+    }
+
+    public function driverLogout(Request $request)
+    {
+        return $this->logout($request, 'driver');
     }
 }

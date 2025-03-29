@@ -42,10 +42,13 @@ return [
             'driver' => 'sanctum',
             'provider' => 'users',
         ],
-
         'admin' => [
             'driver' => 'sanctum',
             'provider' => 'admins',
+        ],
+        'driver' => [
+            'driver' => 'sanctum',
+            'provider' => 'drivers',
         ],
     ],
 

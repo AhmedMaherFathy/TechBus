@@ -2,16 +2,17 @@
 
 namespace Modules\Driver\Models;
 
-use CloudinaryLabs\CloudinaryLaravel\MediaAlly;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Bus\Models\Bus;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
+use CloudinaryLabs\CloudinaryLaravel\MediaAlly;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 // use Modules\Driver\Database\Factories\DriverFactory;
 
-class Driver extends Model
+class Driver extends Model 
 {
-    use HasFactory, MediaAlly;
+    use HasApiTokens, HasFactory, MediaAlly;
 
     /**
      * The attributes that are mass assignable.

@@ -24,6 +24,7 @@ Route::prefix('mobile/user')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('verify-email', [AuthController::class, 'verifyOtp']);
     Route::post('login', [AuthController::class, 'userLogin']);
+    Route::middleware('user.auth')->post('logout', [AuthController::class, 'userLogout']);
 
     Route::prefix('forget-password')->group(function () {
         Route::post('/', [ForgetPasswordController::class, 'SendOtp']);         //mobile/user/forget-password
@@ -44,3 +45,6 @@ Route::prefix('admin/forget-password')->group(function () {
     Route::post('verify', [AdminForgetPasswordController::class, 'verifyOtp']);  ///mobile/user/forget-password
     Route::post('reset-password', [AdminForgetPasswordController::class, 'resetPassword']);  ///mobile/user/forget-password/reset-password
 });
+
+Route::post('mobile/driver/login',[AuthController::class, 'driverLogin']);
+
