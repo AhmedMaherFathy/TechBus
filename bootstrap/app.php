@@ -36,7 +36,8 @@ return Application::configure(basePath: dirname(__DIR__))
             use \App\Traits\HttpResponse;
         });
 
-        $exceptions->render(function (ModelNotFoundException|NotFoundHttpException $e, $request) use($httpResponse) {
+        $exceptions->render(function (ModelNotFoundException $e, $request) use($httpResponse) {
+            //NotFoundHttpException
             return $httpResponse->errorResponse(message: 'Model NOT found');
         });
     })->create();

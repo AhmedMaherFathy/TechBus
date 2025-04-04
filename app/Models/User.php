@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Laravel\Sanctum\HasApiTokens;
+use Modules\Report\Models\Report;
 use Modules\Ticket\Models\Ticket;
 use Modules\Balance\Models\Balance;
 use Illuminate\Notifications\Notifiable;
@@ -67,5 +68,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function balance()
     {
         return $this->hasOne(Balance::class,'user_id','custom_id');
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class,'user_id','custom_id');
     }
 }

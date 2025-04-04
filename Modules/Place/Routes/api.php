@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Place\Http\Controllers\ZoneController;
 use Modules\Place\Http\Controllers\PlaceController;
+use Modules\Place\Http\Controllers\RouteController;
 use Modules\Place\Http\Controllers\StationController;
 
 /*
@@ -40,4 +41,13 @@ Route::prefix('dashboard/stations')->middleware('admin.auth')->group(function(){
     Route::post('',[StationController::class,'store']);
     Route::put('{station}',[StationController::class,'update']);
     Route::delete('{station}',[StationController::class,'destroy']);
+});
+
+
+Route::prefix('dashboard/routes')->middleware('admin.auth')->group(function(){
+    Route::get('',[RouteController::class,'index']);
+    Route::get('{route}',[RouteController::class,'show']);
+    Route::post('',[RouteController::class,'store']);
+    Route::put('{route}',[RouteController::class,'update']);
+    Route::delete('{route}',[RouteController::class,'destroy']);
 });
