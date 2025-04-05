@@ -14,6 +14,5 @@ use Modules\Balance\Http\Controllers\BalanceController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('balance', BalanceController::class)->names('balance');
-});
+Route::post('mobile/user/balance', [BalanceController::class, 'userAddBalance'])
+    ->middleware('user.auth');

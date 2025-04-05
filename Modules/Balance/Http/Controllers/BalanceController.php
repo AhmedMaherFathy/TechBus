@@ -3,63 +3,38 @@
 namespace Modules\Balance\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Modules\Balance\Http\Requests\BalanceRequest;
+use Modules\Balance\Models\Balance;
 
 class BalanceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('balance::index');
-    }
+    use HttpResponse;
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function userAddBalance(BalanceRequest $request)
     {
-        return view('balance::create');
-    }
+        $validated = $request->validated();
+        $user = $request->user('user');
+        $validated['user_id'] = $user->custom_id;
+        
+        DB::transaction(function () use ($user, $validated) {
+            $balance = $user->balance()->firstOrNew();
+            
+            if ($balance->exists) {
+                $balance->increment('points', $validated['points']);
+            } else {
+                $balance->fill($validated)->save();
+            }
+        });
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('balance::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('balance::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        return $this->successResponse(
+            data:[
+                "Points" => $user->balance->points,
+                "UserId" => $user->balance->user_id
+            ],
+            message:'Balance added successfully', 
+        );
     }
 }
