@@ -9,6 +9,7 @@ use Modules\Auth\Http\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Modules\Auth\Http\Middleware\DriverMiddleware;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -27,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin.auth' => AdminMiddleware::class,
             'user.auth' => UserMiddleware::class,
-
+            'driver.auth' => DriverMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

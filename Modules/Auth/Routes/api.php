@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Auth\Http\Controllers\AdminForgetPasswordController;
 use Modules\Auth\Http\Controllers\AuthController;
 use Modules\Auth\Http\Controllers\ForgetPasswordController;
+use Modules\Auth\Http\Controllers\AdminForgetPasswordController;
+use Modules\Auth\Http\Controllers\DriverForgetPasswordController;
 
 /*
  *--------------------------------------------------------------------------
@@ -33,6 +34,18 @@ Route::prefix('mobile/user')->group(function () {
     });
 });
 
+
+Route::prefix('mobile/driver')->group(function () {
+    Route::post('login', [AuthController::class, 'driverLogin']);
+    Route::middleware('driver.auth')->post('logout', [AuthController::class, 'driverLogout']);
+
+    Route::prefix('forget-password')->group(function () {
+        Route::post('/', [DriverForgetPasswordController::class, 'SendOtp']);         //mobile/driver/forget-password
+        Route::post('verify', [DriverForgetPasswordController::class, 'verifyOtp']);  ///mobile/driver/forget-password
+        Route::post('reset-password', [DriverForgetPasswordController::class, 'resetPassword']);  ///mobile/driver/forget-password/reset-password
+    });
+});
+
 // Route::get('test',[AuthController::class,'test']);
 // Route::get('otp', function(){
 //     return view('otp');
@@ -46,5 +59,4 @@ Route::prefix('admin/forget-password')->group(function () {
     Route::post('reset-password', [AdminForgetPasswordController::class, 'resetPassword']);  ///mobile/user/forget-password/reset-password
 });
 
-Route::post('mobile/driver/login',[AuthController::class, 'driverLogin']);
 

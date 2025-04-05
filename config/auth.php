@@ -1,6 +1,7 @@
 <?php
 
 use Modules\Auth\Models\Admin;
+use Modules\Driver\Models\Driver;
 
 return [
 
@@ -78,6 +79,11 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => Admin::class,
+        ],
+
+        'drivers' => [
+            'driver' => 'eloquent',
+            'model' => Driver::class,
         ],
     ],
 

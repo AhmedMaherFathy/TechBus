@@ -100,7 +100,7 @@
 <body>
     <div class="container">
         <div class="logo">
-            <img src="https://res.cloudinary.com/dnrhne5fh/image/upload/v1742349937/iltxkj2q5hmaowbwo3yf.png" alt="logo">
+            <img src="https://res.cloudinary.com/dnrhne5fh/image/upload/v1743853607/c7yibtvib8qzjyjukayj.png" alt="logo">
         </div>
         <h1>Confirm Your Registration with OTP</h1>
         <p class="greeting">Hello <span class="username">{{ $name }}</span> 👋</p>
