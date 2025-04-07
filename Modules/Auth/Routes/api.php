@@ -26,6 +26,7 @@ Route::prefix('mobile/user')->group(function () {
     Route::post('verify-email', [AuthController::class, 'verifyOtp']);
     Route::post('login', [AuthController::class, 'userLogin']);
     Route::middleware('user.auth')->post('logout', [AuthController::class, 'userLogout']);
+    Route::middleware('user.auth')->post('update-profile', [AuthController::class, 'UserUpdateProfile']);
 
     Route::prefix('forget-password')->group(function () {
         Route::post('/', [ForgetPasswordController::class, 'SendOtp']);         //mobile/user/forget-password

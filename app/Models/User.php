@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use CloudinaryLabs\CloudinaryLaravel\MediaAlly;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\Report\Models\Report;
 use Modules\Ticket\Models\Ticket;
@@ -16,7 +17,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, MediaAlly;
 
     /**
      * The attributes that are mass assignable.

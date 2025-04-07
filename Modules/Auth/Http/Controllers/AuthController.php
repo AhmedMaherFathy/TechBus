@@ -18,6 +18,7 @@ use Modules\Auth\Events\UserRegistered;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
 use Modules\Auth\Http\Requests\UserRegisterRequest;
+use Modules\Auth\Http\Requests\UserUpdateProfileRequest;
 
 class AuthController extends Controller
 {
@@ -174,4 +175,21 @@ class AuthController extends Controller
     {
         return $this->logout($request, 'driver');
     }
+
+    public function UserUpdateProfile(UserUpdateProfileRequest $request)
+    {
+        // info($request->file('image'));
+        $validated = $request->validated();
+        // info($validated);die;
+        $user = Auth::guard('user')->user();
+        // info($validated);die;
+        
+        if ($request->hasFile('image')) {
+            $user->updateMedia($validated['image']);
+        }
+        $user->update($validated);
+
+        return $this->successResponse(data: $user, message: 'Profile updated successfully');
+    }
+
 }
