@@ -19,6 +19,7 @@ use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
 use Modules\Auth\Http\Requests\UserRegisterRequest;
 use Modules\Auth\Http\Requests\UserUpdateProfileRequest;
+use Modules\Auth\Transformers\UpdateProfileResource;
 
 class AuthController extends Controller
 {
@@ -187,9 +188,16 @@ class AuthController extends Controller
         if ($request->hasFile('image')) {
             $user->updateMedia($validated['image']);
         }
+        
         $user->update($validated);
 
-        return $this->successResponse(data: $user, message: 'Profile updated successfully');
+        return $this->successResponse(data: new UpdateProfileResource($user), message: 'Profile updated successfully');
     }
 
+    public function showUserProfile()
+    {
+        $user = Auth::guard('user')->user();
+        // info($user);die;
+        return $this->successResponse(data: new UpdateProfileResource($user), message: 'Fetched Successfully');
+    }
 }
