@@ -19,6 +19,7 @@ use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
 use Modules\Auth\Http\Requests\UserRegisterRequest;
 use Modules\Auth\Http\Requests\UserUpdateProfileRequest;
+use Modules\Auth\Transformers\PassengerResource;
 use Modules\Auth\Transformers\UpdateProfileResource;
 
 class AuthController extends Controller
@@ -199,5 +200,16 @@ class AuthController extends Controller
         $user = Auth::guard('user')->user();
         // info($user);die;
         return $this->successResponse(data: new UpdateProfileResource($user), message: 'Fetched Successfully');
+    }
+
+    public function getAllPassengers()
+    {
+        $passengers = User::select('id', 'custom_id', 'first_name', 'last_name', 'email', 'phone')
+            ->with(['balance' => function ($query) {
+                $query->select('points', 'user_id');
+            }])
+            ->fastPaginate();
+
+        return $this->paginatedResponse($passengers, PassengerResource::class);
     }
 }

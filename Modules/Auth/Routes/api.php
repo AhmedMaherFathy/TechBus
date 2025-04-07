@@ -62,3 +62,7 @@ Route::prefix('admin/forget-password')->group(function () {
 });
 
 
+Route::prefix('api/dashboard')->middleware('admin.auth')->group(function () {
+    Route::get('logout', [AuthController::class, 'adminLogout']);
+    Route::get('passengers', [AuthController::class, 'getAllPassengers']);
+});

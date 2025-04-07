@@ -5,7 +5,7 @@ namespace Modules\Auth\Transformers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UpdateProfileResource extends JsonResource
+class PassengerResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,7 +19,7 @@ class UpdateProfileResource extends JsonResource
             'lastName' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'photo' => $this->fetchFirstMedia()['file_url'] ?? null ?: 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1733608099/mspvvthjcuokw7eiyxo6.png',
+            'points' => $this->balance->points,
         ];
     }
 }
