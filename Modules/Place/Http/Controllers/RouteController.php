@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Modules\Place\Models\Route;
 use App\Http\Controllers\Controller;
 use App\Traits\HttpResponse;
-use Modules\Place\Transformers\RouteResource;
+use Illuminate\Support\Facades\DB;
+use Modules\Place\Http\Requests\RouteRequest;
+use Modules\Place\Transformers\RouteStationResource;
 
 class RouteController extends Controller
 {
@@ -14,21 +16,22 @@ class RouteController extends Controller
 
     public function index()
     {
-        return $this->paginatedResponse(Route::with('stations:name')->fastPaginate(),RouteResource::class);
+        return $this->paginatedResponse(Route::with('stations')->fastPaginate(),RouteStationResource::class);
     }
 
-
-    public function create()
+    public function store(RouteRequest $request)
     {
-        return view('place::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        $validated = $request->validated();
+        $validated['custom_id'] = $this->generateCustomId();
+        
+        DB::transaction(function () use ($validated) {
+            $route = Route::create($validated);
+            if(isset($validated['stations'])){
+                $route->stations()->attach($validated['stations']);
+            }
+        });
+        
+        return $this->successResponse(message:"Route Created Successfully");
     }
 
     /**
@@ -36,30 +39,43 @@ class RouteController extends Controller
      */
     public function show($id)
     {
-        return view('place::show');
+        return $this->successResponse(new RouteStationResource(Route::with('stations')->findOrFail($id)));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function update(RouteRequest $request, $id)
     {
-        return view('place::edit');
-    }
+        $validated = $request->validated();
+        $route = Route::with('stations')->findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        DB::transaction(function () use ($route, $validated) {
+            (isset($validated['stations'])) ? $route->stations()->sync($validated['stations']) : $route->stations()->detach();
+            $route->update($validated);
+        });
 
-    /**
-     * Remove the specified resource from storage.
-     */
+        return $this->successResponse(message:"Route Updated Successfully");
+    }
+    
+
     public function destroy($id)
     {
-        //
+        $route = Route::findOrFail($id);
+
+        DB::transaction(function () use ($route) {
+            $route->stations()->detach();
+            $route->delete();
+        });
+        
+        return $this->successResponse(message:"Route Deleted Successfully");
+    }
+
+    public function generateCustomId()
+    {
+        $lastRoute = Route::latest('id')->value('id');
+        $nextId = $lastRoute ? ($lastRoute + 1) : 1;
+        $customId = 'R-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+        return $customId;
     }
 }

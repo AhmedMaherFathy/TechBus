@@ -20,7 +20,7 @@ class PlaceController extends Controller
         //     return Zone::Searchable($value)->get();
         // });  //one solution
 
-        $zones = Zone::Searchable($value)->limit(10)->get(['id','custom_id','name']);
+        $zones = Zone::Searchable($value)->limit(10)->get(['id', 'custom_id', 'name']);
 
         return response()->json(["data" => $zones]);
     }
@@ -113,81 +113,80 @@ class PlaceController extends Controller
     //     ]);
     // }
     public function getBusNumbers(Request $request)
-{
-    $request->validate([
-        'start_station' => 'required|exists:stations,id',
-        'end_station' => 'required|exists:stations,id',
-    ]);
+    {
+        $request->validate([
+            'start_station' => 'required|exists:stations,id',
+            'end_station' => 'required|exists:stations,id',
+        ]);
 
-    $startStationId = $request->input('start_station');
-    $endStationId = $request->input('end_station');
+        $startStationId = $request->input('start_station');
+        $endStationId = $request->input('end_station');
 
-    // Fetch all routes containing the start station
-    $startRoutes = DB::table('route_station')
-        ->where('station_id', $startStationId)
-        ->pluck('route_id');
+        // Fetch all routes containing the start station
+        $startRoutes = DB::table('route_station')
+            ->where('station_id', $startStationId)
+            ->pluck('route_id');
 
-    // Fetch all routes containing the end station
-    $endRoutes = DB::table('route_station')
-        ->where('station_id', $endStationId)
-        ->pluck('route_id');
+        // Fetch all routes containing the end station
+        $endRoutes = DB::table('route_station')
+            ->where('station_id', $endStationId)
+            ->pluck('route_id');
 
-    // Find common routes that contain both stations
-    $commonRoutes = $startRoutes->intersect($endRoutes);
+        // Find common routes that contain both stations
+        $commonRoutes = $startRoutes->intersect($endRoutes);
 
-    if ($commonRoutes->isEmpty()) {
+        if ($commonRoutes->isEmpty()) {
+            return response()->json([
+                'message' => 'No buses available between these stations.',
+                'data' => [],
+            ]);
+        }
+
+        // Process routes and determine direction
+        $validRoutes = [];
+        foreach ($commonRoutes as $routeId) {
+            $startOrder = DB::table('route_station')
+                ->where('route_id', $routeId)
+                ->where('station_id', $startStationId)
+                ->value('order');
+
+            $endOrder = DB::table('route_station')
+                ->where('route_id', $routeId)
+                ->where('station_id', $endStationId)
+                ->value('order');
+
+            if ($startOrder !== null && $endOrder !== null) {
+                $validRoutes[] = [
+                    'route_id' => $routeId,
+                    'start_order' => min($startOrder, $endOrder),
+                    'end_order' => max($startOrder, $endOrder),
+                    'reverse' => $startOrder > $endOrder, // Check if route should be reversed
+                ];
+            }
+        }
+
+        // Fetch route details and adjust stations order
+        $routes = Route::with(['stations' => function ($query) use ($validRoutes) {
+            foreach ($validRoutes as $route) {
+                $query->whereIn('route_station.route_id', [$route['route_id']])
+                    ->whereBetween('route_station.order', [$route['start_order'], $route['end_order']])
+                    ->select('stations.name', 'stations.lat', 'stations.long', 'route_station.order')
+                    ->orderBy('route_station.order', $route['reverse'] ? 'desc' : 'asc'); // Reverse order if needed
+            }
+        }])
+            ->whereIn('id', array_column($validRoutes, 'route_id'))
+            ->get(['id', 'name', 'number'])
+            ->each(function ($route) {
+                $route->stations->makeHidden('pivot');
+            });
+
+        // Calculate estimated time for each route
+        $routes->each(function ($route) {
+            $route->estimated_time = count($route->stations) * 7; // Example time calculation
+        });
+
         return response()->json([
-            'message' => 'No buses available between these stations.',
-            'data' => [],
+            'data' => RouteResource::collection($routes),
         ]);
     }
-
-    // Process routes and determine direction
-    $validRoutes = [];
-    foreach ($commonRoutes as $routeId) {
-        $startOrder = DB::table('route_station')
-            ->where('route_id', $routeId)
-            ->where('station_id', $startStationId)
-            ->value('order');
-
-        $endOrder = DB::table('route_station')
-            ->where('route_id', $routeId)
-            ->where('station_id', $endStationId)
-            ->value('order');
-
-        if ($startOrder !== null && $endOrder !== null) {
-            $validRoutes[] = [
-                'route_id' => $routeId,
-                'start_order' => min($startOrder, $endOrder),
-                'end_order' => max($startOrder, $endOrder),
-                'reverse' => $startOrder > $endOrder, // Check if route should be reversed
-            ];
-        }
-    }
-
-    // Fetch route details and adjust stations order
-    $routes = Route::with(['stations' => function ($query) use ($validRoutes) {
-        foreach ($validRoutes as $route) {
-            $query->whereIn('route_station.route_id', [$route['route_id']])
-                ->whereBetween('route_station.order', [$route['start_order'], $route['end_order']])
-                ->select('stations.name', 'stations.lat', 'stations.long', 'route_station.order')
-                ->orderBy('route_station.order', $route['reverse'] ? 'desc' : 'asc'); // Reverse order if needed
-        }
-    }])
-    ->whereIn('id', array_column($validRoutes, 'route_id'))
-    ->get(['id', 'name', 'number'])
-    ->each(function ($route) {
-        $route->stations->makeHidden('pivot');
-    });
-
-    // Calculate estimated time for each route
-    $routes->each(function ($route) {
-        $route->estimated_time = count($route->stations) * 7; // Example time calculation
-    });
-
-    return response()->json([
-        'data' => RouteResource::collection($routes),
-    ]);
-}
-
 }

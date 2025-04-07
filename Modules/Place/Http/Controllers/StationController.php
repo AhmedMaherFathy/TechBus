@@ -5,6 +5,7 @@ namespace Modules\Place\Http\Controllers;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Modules\Place\Models\Station;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Modules\Place\Http\Requests\StationRequest;
 use Modules\Place\Transformers\StationResource;
@@ -54,5 +55,16 @@ class StationController extends Controller
         $nextId = $lastStation ? ($lastStation + 1) : 1;
         $customId = 'S-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
         return $customId;
+    }
+
+    public function getStations(Request $request)
+    {
+        $stations = Station::Searchable($request->input('search'))
+            ->select('id','name')
+            ->cursor(10);
+
+        return response()->json([
+            'data' => $stations,
+        ]);
     }
 }

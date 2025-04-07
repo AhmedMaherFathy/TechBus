@@ -25,6 +25,7 @@ Route::get('/zones/search/{value}',[PlaceController::class,'getZone']);
 Route::get('/stations/menu/{value}',[PlaceController::class,'getStation']);
 Route::get('/end-stations/menu/{id}',[PlaceController::class,'getEndStation']);
 Route::post('/get-bus-numbers', [PlaceController::class, 'getBusNumbers']);
+Route::get('dashboard/select-menu/stations',[StationController::class,'getStations']);
 
 Route::prefix('dashboard/zones')->middleware('admin.auth')->group(function(){
     Route::get('',[ZoneController::class,'index']);
