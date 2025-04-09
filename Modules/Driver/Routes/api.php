@@ -29,6 +29,6 @@ Route::middleware('admin.auth')->group(function() {
 
 //Driver App 
 // ->middleware('user.auth')
-Route::prefix('mobile')->group(function(){
-    Route::put('update-driver-location/{driver}',[TrackingController::class,'updateDriverLocation']);
+Route::prefix('mobile')->middleware('driver.auth')->group(function(){
+    Route::put('update-driver-location',[TrackingController::class,'updateDriverLocation']);
 });

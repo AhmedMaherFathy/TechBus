@@ -32,6 +32,8 @@ class Driver extends Model
 
     protected $hidden = ['password'];
 
+    protected $guard = ['driver'];
+
     // protected static function newFactory(): DriverFactory
     // {
     //     // return DriverFactory::new();
