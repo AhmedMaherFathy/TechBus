@@ -19,6 +19,7 @@ class RouteStationResource extends JsonResource
             'number' => $this->number,
             'stations' => $this->stations->map(function ($station) {
                 return [
+                    "id" => $station->id,
                     "name" => $station->name,
                     "order" => $station->pivot->order,
                 ];
