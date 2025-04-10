@@ -15,13 +15,13 @@
         "APP_URL": "http://tech-bus-egy.vercel.app",
         "APP_KEY": "base64:30OL3S0S7FYqfIlG71Zji6CFVkXFMxYHDVYrZ0MTRcs=",
 
+        "BROADCAST_DRIVER": "pusher",
+        "BROADCAST_CONNECTION" : "pusher",
         "PUSHER_APP_ID": "1893366",
         "PUSHER_APP_KEY": "488b28cd543c3e616398",
         "PUSHER_APP_SECRET": "bb14accaa8c913fd988f",
         "PUSHER_APP_CLUSTER": "eu",
         
-        "BROADCAST_DRIVER": "pusher",
-
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
