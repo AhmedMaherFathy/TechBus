@@ -31,6 +31,7 @@ Route::middleware('admin.auth')->group(function() {
 // ->middleware('user.auth')
 Route::prefix('mobile')->middleware('driver.auth')->group(function(){
     Route::put('update-driver-location',[TrackingController::class,'updateDriverLocation']);
+    Route::get('disable-driver-location',[TrackingController::class,'disableLocation']);
 });
 
 Route::get('dashboard/drivers/active',[TrackingController::class,'getActiveBuses']);
