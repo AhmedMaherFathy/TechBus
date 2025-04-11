@@ -6,6 +6,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('driver.location.{driverId}', function ($driver, $driverId) {
-    return (int) $driver->id === (int) $driverId;
-});
+// Broadcast::channel('driver.location.{driverId}', function ($driver, $driverId) {
+//     return (int) $driver->id === (int) $driverId;
+// });

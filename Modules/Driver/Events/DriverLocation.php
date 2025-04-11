@@ -30,7 +30,7 @@ class DriverLocation implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('driver.location.' . $this->driver->id),
+            new channel('drivers'),
         ];
     }
 
