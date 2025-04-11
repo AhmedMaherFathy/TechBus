@@ -37,6 +37,7 @@ class DriverLocation implements ShouldBroadcastNow
     public function broadcastWith()
     {
         return[
+            'driverId' => $this->driver->id,
             'lat' => $this->driver->lat,
             'long' => $this->driver->long,
         ];

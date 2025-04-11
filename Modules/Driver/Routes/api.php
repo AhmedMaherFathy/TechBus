@@ -32,3 +32,5 @@ Route::middleware('admin.auth')->group(function() {
 Route::prefix('mobile')->middleware('driver.auth')->group(function(){
     Route::put('update-driver-location',[TrackingController::class,'updateDriverLocation']);
 });
+
+Route::get('dashboard/drivers/active',[TrackingController::class,'getActiveBuses']);
