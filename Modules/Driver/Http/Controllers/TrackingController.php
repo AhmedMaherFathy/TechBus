@@ -17,6 +17,8 @@ class TrackingController extends Controller
 
     public function updateDriverLocation(Request $request)
     {
+        DB::listen(fn($query) => info($query->toRawSql()));
+
         $driver = $request->user('driver')->select('id','custom_id')->first();
 
         if (!DB::table('buses')->where('driver_id', $driver->custom_id)->exists()) {
