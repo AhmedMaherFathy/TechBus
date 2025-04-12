@@ -2,6 +2,7 @@
 
 namespace Modules\Driver\Models;
 
+use Carbon\Carbon;
 use Modules\Bus\Models\Bus;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
@@ -42,5 +43,14 @@ class Driver extends Model
     public function bus()
     {
         return $this->hasOne(Bus::class,'driver_id','custom_id');
+    }
+    public function getFormattedStartTimeAttribute()
+    {
+        return $this->start_time ? Carbon::parse($this->start_time)->format('h:i A') : null;
+    }
+
+    public function getFormattedEndTimeAttribute()
+    {
+        return $this->end_time ? Carbon::parse($this->end_time)->format('h:i A') : null;
     }
 }

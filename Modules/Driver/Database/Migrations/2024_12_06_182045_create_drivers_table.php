@@ -23,6 +23,9 @@ return new class extends Migration
             $table->enum('status', ['active', 'off', 'standby'])->default('active');
             $table->double('lat')->nullable();
             $table->double('long')->nullable();
+            $table->json('days')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->timestamps();
         });
     }

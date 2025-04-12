@@ -13,7 +13,7 @@ class BusDatabaseSeeder extends Seeder
     public function run(): void
     {
         Bus::insert([[
-            'plate_number' => '1245',
+            'plate_number' => '1245-م ص ر',
             'custom_id' => 'B-001',
             'route_id' => 'R-001', //26
             'driver_id' => 'D-001',
@@ -21,7 +21,7 @@ class BusDatabaseSeeder extends Seeder
             'status' => 'active',
         ],
         [
-            'plate_number' => '1478',
+            'plate_number' => '1478-ت س ض',
             'custom_id' => 'B-002',
             'route_id' => 'R-002', //308
             'driver_id' => 'D-002',
@@ -29,7 +29,7 @@ class BusDatabaseSeeder extends Seeder
             'status' => 'active',
         ],
         [
-            'plate_number' => '2222',
+            'plate_number' => '2222-م س ق',
             'custom_id' => 'B-003',
             'route_id' => 'R-003', //M9
             'driver_id' => 'D-003',
@@ -37,7 +37,7 @@ class BusDatabaseSeeder extends Seeder
             'status' => 'active',
         ],
         [
-            'plate_number' => '1598',
+            'plate_number' => '1598- و ا س',
             'custom_id' => 'B-004',
             'route_id' => 'R-004', //18
             'driver_id' => 'D-004',
@@ -45,7 +45,7 @@ class BusDatabaseSeeder extends Seeder
             'status' => 'active',
         ],
         [
-            'plate_number' => '1748',
+            'plate_number' => '1748-ع غ ف',
             'custom_id' => 'B-003',
             'route_id' => 'R-005', //50
             'driver_id' => 'D-005',

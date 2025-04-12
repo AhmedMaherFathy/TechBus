@@ -23,7 +23,17 @@ class DriverDatabaseSeeder extends Seeder
                     'driver_license'   => '165468916156',
                     'password'         =>  Hash::make('Driver1234'),
                     // 'photo'            => 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1734164716/axqienltbo49ee3ty81x.jpg',
-                    'custom_id'        => 'D-001'
+                    'custom_id'        => 'D-001',
+                    'days'            =>    json_encode([
+                                                        'Saturday',
+                                                        'Sunday',
+                                                        'Monday',
+                                                        'Tuesday',
+                                                        'Wednesday',
+                                                        'Thursday',
+                                                        ]),
+                    'start_time'      => '08:00:00',
+                    'end_time'        => '17:00:00',
                 ],
                 [
                     'full_name'        => 'Abdelkodous Fathy',
@@ -33,7 +43,17 @@ class DriverDatabaseSeeder extends Seeder
                     'driver_license'   => '13564684',
                     'password'         =>  Hash::make('Driver2345'),
                     // 'photo'            => 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1734164716/axqienltbo49ee3ty81x.jpg',
-                    'custom_id'        => 'D-002'
+                    'custom_id'        => 'D-002',
+                    'days'            =>    json_encode([
+                                                        'Saturday',
+                                                        'Sunday',
+                                                        'Monday',
+                                                        'Tuesday',
+                                                        'Wednesday',
+                                                        'Thursday',
+                                                        ]),
+                    'start_time'      => '08:00:00',
+                    'end_time'        => '17:00:00',
                 ],
                 [
                     'full_name'        => 'Mostafa Ali',
@@ -43,7 +63,17 @@ class DriverDatabaseSeeder extends Seeder
                     'driver_license'   => '1234687',
                     'password'         =>  Hash::make('Driver3456'),
                     // 'photo'            => 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1734164716/axqienltbo49ee3ty81x.jpg',
-                    'custom_id'        => 'D-003'
+                    'custom_id'        => 'D-003',
+                    'days'            =>    json_encode([
+                                                        'Saturday',
+                                                        'Sunday',
+                                                        'Monday',
+                                                        'Tuesday',
+                                                        'Wednesday',
+                                                        'Thursday',
+                                                        ]),
+                    'start_time'      => '08:00:00',
+                    'end_time'        => '17:00:00',
                 ],
                 [
                     'full_name'        => 'Hossam AbdElRahman',
@@ -53,7 +83,17 @@ class DriverDatabaseSeeder extends Seeder
                     'driver_license'   => '1658495',
                     'password'         =>  Hash::make('Driver4567'),
                     // 'photo'            => 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1734164716/axqienltbo49ee3ty81x.jpg',
-                    'custom_id'        => 'D-004'
+                    'custom_id'        => 'D-004',
+                    'days'            =>    json_encode([
+                                                        'Saturday',
+                                                        'Sunday',
+                                                        'Monday',
+                                                        'Tuesday',
+                                                        'Wednesday',
+                                                        'Thursday',
+                                                        ]),
+                    'start_time'      => '08:00:00',
+                    'end_time'        => '17:00:00',
                 ],
                 [
                     'full_name'        => 'Seif Hossam',
@@ -63,7 +103,17 @@ class DriverDatabaseSeeder extends Seeder
                     'driver_license'   => '16769489',
                     'password'         =>  Hash::make('Driver5678'),
                     // 'photo'            => 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1734164716/axqienltbo49ee3ty81x.jpg',
-                    'custom_id'        => 'D-005'
+                    'custom_id'        => 'D-005',
+                    'days'            =>    json_encode([
+                                                        'Saturday',
+                                                        'Sunday',
+                                                        'Monday',
+                                                        'Tuesday',
+                                                        'Wednesday',
+                                                        'Thursday',
+                                                        ]),
+                    'start_time'      => '08:00:00',
+                    'end_time'        => '17:00:00',
                 ],
             ]
         );

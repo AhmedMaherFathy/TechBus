@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Modules\Driver\Http\Requests\DriverRequest;
+use Modules\Driver\Transformers\DriverInfoResource;
 use Modules\Driver\Transformers\DriverResource;
 
 
@@ -111,5 +112,20 @@ class DriverController extends Controller
         } catch (\Exception $e) {
             return $this->errorResponse(message: 'No Driver found');
         }
+    }
+    /*
+        home page driver app
+     */
+    public function driverInfo(Request $request) //02:25
+    {
+        $driver = $request->user('driver')
+                                        ->select('custom_id', 'full_name', 'start_time', 'end_time', 'days')
+                                        ->with([
+                                            'bus' => fn($query) => $query->select('driver_id', 'plate_number', 'route_id'),
+                                            'bus.route' => fn($query) => $query->select('custom_id', 'number')
+                                        ])
+                                        ->first();
+
+        return $this->successResponse(DriverInfoResource::make($driver), message: 'Driver Info Fetched Successfully');
     }
 }
