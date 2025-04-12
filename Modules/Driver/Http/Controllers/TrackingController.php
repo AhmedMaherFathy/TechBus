@@ -17,9 +17,9 @@ class TrackingController extends Controller
 
     public function updateDriverLocation(Request $request)
     {
-        $driver = $request->user('driver');
+        $driver = $request->user('driver')->select('id','custom_id')->first();
 
-        if (!$driver->bus) {
+        if (!DB::table('buses')->where('driver_id', $driver->custom_id)->exists()) {
             return $this->errorResponse(
                 message: 'This driver does not have a bus assigned.',
             );
@@ -51,11 +51,16 @@ class TrackingController extends Controller
             $driver->id
         ]);
 
-        $driver->refresh();
+        // $driver->refresh();
 
-        event(new DriverLocation($driver));
+        event(new DriverLocation(
+                                    $driver->id,
+                                    $validated['lat'],
+                                    $validated['long']
+                                ));
 
-        return $this->successResponse(message: 'location Updated');
+        return response()->json(['status' => 200]);
+        // return $this->successResponse(message: 'location Updated');
     }
 
     public function disableLocation()
