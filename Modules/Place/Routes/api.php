@@ -52,3 +52,5 @@ Route::prefix('dashboard/routes')->middleware('admin.auth')->group(function(){
     Route::put('{route}',[RouteController::class,'update']);
     Route::delete('{route}',[RouteController::class,'destroy']);
 });
+
+Route::get('mobile/driver/stations',[PlaceController::class,'getDriverStations'])->middleware('driver.auth');

@@ -189,4 +189,27 @@ class PlaceController extends Controller
             'data' => RouteResource::collection($routes),
         ]);
     }
+
+    /** 
+     * driver app => driver route in order with lat & long
+     */
+    public function getDriverStations(Request $request)
+    {
+        $driverID = $request->user('driver')->custom_id;
+
+        $stations =DB::table('stations')
+                                        ->join('route_station', 'stations.id', '=', 'route_station.station_id')
+                                        ->join('routes', 'route_station.route_id', '=', 'routes.id')
+                                        ->join('buses', 'routes.custom_id', '=', 'buses.route_id')
+                                        ->where('buses.driver_id', $driverID)
+                                        ->select('stations.name', 'stations.lat', 'stations.long','route_station.order')
+                                        ->orderBy('route_station.order')
+                                        ->get();
+
+        return response()->json([
+                                "data" => $stations,
+                                "message" => "success",
+                                "status" => 200
+                                ]);
+    }
 }
