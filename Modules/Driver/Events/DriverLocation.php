@@ -19,7 +19,7 @@ class DriverLocation implements ShouldBroadcastNow
     /**
      * Create a new event instance.
      */
-    public function __construct(public $driverId ,public $lat ,public $long)
+    public function __construct(public $driverId, public $driverCustomId ,public $lat ,public $long)
     {
         //
     }
@@ -37,7 +37,8 @@ class DriverLocation implements ShouldBroadcastNow
     public function broadcastWith()
     {
         return[
-            'driverId' => $this->driverId,
+            // 'driverId' => $this->driverId,
+            'driverCustomId' => $this->driverCustomId,
             'lat' => $this->lat,
             'long' => $this->long,
         ];

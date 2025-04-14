@@ -57,6 +57,7 @@ class TrackingController extends Controller
 
         event(new DriverLocation(
                                     $driver->id,
+                                    $driver->custom_id,
                                     $validated['lat'],
                                     $validated['long']
                                 ));
@@ -79,7 +80,12 @@ class TrackingController extends Controller
             'lat' => null,
             'long' => null,
         ]);
-        event(new DriverLocation($driver));
+        event(new DriverLocation(
+                                    $driver->id,
+                                    $driver->custom_id,
+                                    null,
+                                    null
+                                ));
 
         return $this->successResponse(message: 'location disabled');
     }
