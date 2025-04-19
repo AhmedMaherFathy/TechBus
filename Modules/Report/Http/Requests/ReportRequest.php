@@ -13,7 +13,8 @@ class ReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'description' => 'required|string'
+            'note' => 'required|string',
+            'description' => 'nullable|string'
         ];
     }
 
