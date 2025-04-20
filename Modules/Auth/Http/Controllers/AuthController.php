@@ -17,10 +17,12 @@ use Illuminate\Support\Facades\Mail;
 use Modules\Auth\Events\UserRegistered;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\VerifyRequest;
-use Modules\Auth\Http\Requests\UserRegisterRequest;
-use Modules\Auth\Http\Requests\UserUpdateProfileRequest;
 use Modules\Auth\Transformers\PassengerResource;
+use Modules\Auth\Http\Requests\UserRegisterRequest;
 use Modules\Auth\Transformers\UpdateProfileResource;
+use Modules\Auth\Http\Requests\UserUpdateProfileRequest;
+use Modules\Auth\Http\Requests\DriverUpdateProfileRequest;
+use Modules\Auth\Transformers\DriverUpdateProfileResource;
 
 class AuthController extends Controller
 {
@@ -178,21 +180,31 @@ class AuthController extends Controller
         return $this->logout($request, 'driver');
     }
 
-    public function UserUpdateProfile(UserUpdateProfileRequest $request)
+    public function updateProfile($validated, $guard)
     {
-        // info($request->file('image'));
-        $validated = $request->validated();
-        // info($validated);die;
-        $user = Auth::guard('user')->user();
-        // info($validated);die;
-        
-        if ($request->hasFile('image')) {
+        $user = Auth::guard($guard)->user();
+
+        if (isset($validated['image'])) {
             $user->updateMedia($validated['image']);
         }
         
         $user->update($validated);
 
+        return $user;
+    }
+
+    public function userUpdateProfile(UserUpdateProfileRequest $request)
+    {
+        $user = $this->updateProfile($request->validated(), 'user');
+
         return $this->successResponse(data: new UpdateProfileResource($user), message: 'Profile updated successfully');
+    }
+    
+    public function driverUpdateProfile(DriverUpdateProfileRequest $request)
+    {
+        $driver = $this->updateProfile($request->validated(), 'driver');
+
+        return $this->successResponse(data: new DriverUpdateProfileResource($driver), message: 'Profile updated successfully');
     }
 
     public function showUserProfile()
@@ -200,6 +212,11 @@ class AuthController extends Controller
         $user = Auth::guard('user')->user();
         // info($user);die;
         return $this->successResponse(data: new UpdateProfileResource($user), message: 'Fetched Successfully');
+    }
+    public function showDriverProfile()
+    {
+        $driver = Auth::guard('driver')->user();
+        return $this->successResponse(data: new DriverUpdateProfileResource($driver), message: 'Fetched Successfully');
     }
 
     public function getAllPassengers()

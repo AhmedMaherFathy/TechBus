@@ -26,7 +26,7 @@ Route::prefix('mobile/user')->group(function () {
     Route::post('verify-email', [AuthController::class, 'verifyOtp']);
     Route::post('login', [AuthController::class, 'userLogin']);
     Route::middleware('user.auth')->post('logout', [AuthController::class, 'userLogout']);
-    Route::middleware('user.auth')->post('update-profile', [AuthController::class, 'UserUpdateProfile']);
+    Route::middleware('user.auth')->post('update-profile', [AuthController::class, 'userUpdateProfile']);
     Route::middleware('user.auth')->get('show/update-profile', [AuthController::class, 'showUserProfile']);
 
     Route::prefix('forget-password')->group(function () {
@@ -40,7 +40,9 @@ Route::prefix('mobile/user')->group(function () {
 Route::prefix('mobile/driver')->group(function () {
     Route::post('login', [AuthController::class, 'driverLogin']);
     Route::middleware('driver.auth')->post('logout', [AuthController::class, 'driverLogout']);
-
+    Route::middleware('driver.auth')->post('update-profile', [AuthController::class, 'driverUpdateProfile']);
+    Route::middleware('driver.auth')->get('show/update-profile', [AuthController::class, 'showDriverProfile']);
+    
     Route::prefix('forget-password')->group(function () {
         Route::post('/', [DriverForgetPasswordController::class, 'SendOtp']);         //mobile/driver/forget-password
         Route::post('verify', [DriverForgetPasswordController::class, 'verifyOtp']);  ///mobile/driver/forget-password
