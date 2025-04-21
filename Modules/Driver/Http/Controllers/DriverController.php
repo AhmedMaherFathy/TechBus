@@ -19,7 +19,10 @@ class DriverController extends Controller
 
     public function index()
     {
-        $driver = Driver::fastPaginate(10);
+        $driver = Driver::with([
+            'bus' => fn($q) => $q->select('id','custom_id','driver_id'),
+            ])
+            ->fastPaginate(10);
 
         return $this->paginatedResponse($driver, DriverResource::class, message: 'driver Fetched Successfully');
     }
@@ -60,7 +63,10 @@ class DriverController extends Controller
      */
     public function show($id)
     {
-        $driver = Driver::find($id);
+        $driver = Driver::with([
+            'bus' => fn($q) => $q->select('id','custom_id','driver_id'),
+            ])
+            ->find($id);
 
         if ($driver) {
             return $this->successResponse(DriverResource::make($driver), message: 'Fetched Successfully');
