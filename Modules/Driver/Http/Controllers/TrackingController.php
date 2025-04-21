@@ -10,6 +10,7 @@ use Modules\Driver\Models\Driver;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Modules\Driver\Events\AllDriverLocations;
 use Modules\Driver\Events\DriverLocation;
 
 class TrackingController extends Controller
@@ -63,12 +64,14 @@ class TrackingController extends Controller
 
         // info($driver->custom_id);die;
 
-        event(new DriverLocation(
-                                    $driver->id,
-                                    $driver->custom_id,
-                                    $validated['lat'],
-                                    $validated['long']
-                                ));
+        // event(new DriverLocation(
+        //                             $driver->id,
+        //                             $driver->custom_id,
+        //                             $validated['lat'],
+        //                             $validated['long']
+        //                         ));
+        
+        $this->allDriverLocations();
 
         return response()->json(['status' => 200]);
         // return $this->successResponse(message: 'location Updated');
@@ -95,7 +98,28 @@ class TrackingController extends Controller
                                     null
                                 ));
 
+
         return $this->successResponse(message: 'location disabled');
+    }
+
+
+
+    public function allDriverLocations()
+    {
+        $drivers = DB::table('drivers')
+            ->select('custom_id', 'lat', 'long')
+            ->whereNotNull('lat')
+            ->whereNotNull('long')
+            ->get();
+            // ->toArray();
+
+        event(new AllDriverLocations(
+            $drivers
+        ));
+
+        return response()->json([
+            'status' => 200
+        ]);
     }
 
     public function getActiveBuses()
