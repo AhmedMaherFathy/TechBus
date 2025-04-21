@@ -129,7 +129,7 @@ class DriverController extends Controller
                                         ])
                                         ->where('id', $request->user('driver')->id)
                                         ->first();
-        info($driver);die;
+        // info($driver);die;
         return $this->successResponse(DriverInfoResource::make($driver), message: 'Driver Info Fetched Successfully');
     }
 }
