@@ -121,15 +121,15 @@ class DriverController extends Controller
      */
     public function driverInfo(Request $request) //02:25
     {
-        $driver = DB::table('drivers')
-                                        ->select('custom_id', 'full_name', 'start_time', 'end_time', 'days')
+        $driver = Driver::
+                                        select('custom_id', 'full_name', 'start_time', 'end_time', 'days')
                                         ->with([
                                             'bus' => fn($query) => $query->select('driver_id', 'plate_number', 'route_id'),
                                             'bus.route' => fn($query) => $query->select('custom_id', 'number')
                                         ])
                                         ->where('id', $request->user('driver')->id)
                                         ->first();
-
+        info($driver);die;
         return $this->successResponse(DriverInfoResource::make($driver), message: 'Driver Info Fetched Successfully');
     }
 }
