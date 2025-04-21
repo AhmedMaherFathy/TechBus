@@ -16,3 +16,9 @@ use Modules\Report\Http\Controllers\ReportController;
 
 
 Route::post('mobile/report',[ReportController::class,'store'])->middleware('user.auth');
+
+Route::prefix('dashboard/reports')->middleware('admin.auth')->group(function () {
+    Route::get('',[ReportController::class,'index']);
+    Route::get('{id}',[ReportController::class,'show']);
+    Route::delete('{id}',[ReportController::class,'destroy']);
+});
