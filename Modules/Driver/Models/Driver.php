@@ -29,6 +29,9 @@ class Driver extends Model
         'driver_license',
         'lat',
         'long',
+        'days',
+        'start_time',
+        'end_time',
     ];
 
     protected $hidden = ['password'];

@@ -29,6 +29,10 @@ class DriverRequest extends FormRequest
         'password'         => $password.'|string|min:8',
         'photo'            => 'sometimes|image|mimes:jpeg,png,jpg,svg|max:2048',
         'status'           => 'sometimes',
+        'start_time'       => 'sometimes|date_format:H:i:s',
+        'end_time'         => 'sometimes|date_format:H:i:s,after:start_time',
+        'days'             => 'sometimes|array',
+        'days.*'           => 'sometimes|string|distinct|in:sunday,monday,tuesday,wednesday,thursday,friday,saturday',
         ];
     }
     /**

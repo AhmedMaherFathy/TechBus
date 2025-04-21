@@ -27,24 +27,21 @@ class DriverController extends Controller
         return $this->paginatedResponse($driver, DriverResource::class, message: 'driver Fetched Successfully');
     }
 
-
     public function store(DriverRequest $request)
     {
         $validated = $request->validated();
         $customId = $this->generateCustomId();
-
         $validated['password'] = Hash::make($validated['password']);
         $validated['custom_id'] = $customId;
-
+        $validated['days'] = json_encode($validated['days'] ?? []); // Encode to JSON
+        // info($validated);die;
         $driver = Driver::create($validated);
 
-        if ($request->hasFile('photo')) {
+        if (isset($validated['photo'])) {
             $driver->attachMedia($request->file('photo'));
         }
         return $this->successResponse(message: 'Driver Created Successfully');
-    
     }
-    
     /**
      * Generate a custom ID for the driver.
      *
