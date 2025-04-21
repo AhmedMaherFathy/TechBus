@@ -9,6 +9,7 @@ use Illuminate\Support\Benchmark;
 use Modules\Driver\Models\Driver;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Modules\Driver\Events\DriverLocation;
 
 class TrackingController extends Controller
@@ -18,9 +19,16 @@ class TrackingController extends Controller
     public function updateDriverLocation(Request $request)
     {
         // DB::listen(fn($query) => info($query->toRawSql()));
+        // info($request->user('driver'));
+        // $driver = $request->user('driver')->only('id','custom_id');
+        // info("continue");
+        // info("$driver");die;
+        $driver = DB::table('drivers')
+            ->select('id', 'custom_id')
+            ->where('id', $request->user('driver')->id)
+            ->first();
 
-        $driver = $request->user('driver')->select('id','custom_id')->first();
-
+            // info($driver);die;
         if (!DB::table('buses')->where('driver_id', $driver->custom_id)->exists()) {
             return $this->errorResponse(
                 message: 'This driver does not have a bus assigned.',
@@ -53,7 +61,7 @@ class TrackingController extends Controller
             $driver->id
         ]);
 
-        // $driver->refresh();
+        // info($driver->custom_id);die;
 
         event(new DriverLocation(
                                     $driver->id,
