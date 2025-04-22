@@ -33,6 +33,7 @@ Route::prefix('mobile')->middleware('driver.auth')->group(function(){
     Route::put('update-driver-location',[TrackingController::class,'updateDriverLocation']);
     Route::get('disable-driver-location',[TrackingController::class,'disableLocation']);
     Route::get('/driver/home',[DriverController::class,'driverInfo']);
+    Route::get('/driver/book-ticket',[DriverController::class,'driverBookTicket']);
 });
 
 Route::get('dashboard/drivers/active',[TrackingController::class,'getActiveBuses']);

@@ -6,6 +6,8 @@ use App\Models\User;
 use Modules\Bus\Models\Bus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Driver\Models\Driver;
+
 // use Modules\Ticket\Database\Factories\TicketFactory;
 
 class Ticket extends Model
@@ -41,6 +43,17 @@ class Ticket extends Model
                                                 'user_id',     // Foreign key in pivot table pointing to the users table
                                                 'custom_id',   // Local key on the tickets table
                                                 'custom_id'    // Local key on the users table
-    );
+                                    );
+    }
+
+    public function drivers()
+    {
+        return $this->belongsToMany(Driver::class,
+                                                'driver_ticket',
+                                                'ticket_id',   // Foreign key in pivot table pointing to the tickets table
+                                                'driver_id',     // Foreign key in pivot table pointing to the users table
+                                                'custom_id',   // Local key on the tickets table
+                                                'custom_id'    // Local key on the users table
+                                    );
     }
 }

@@ -121,15 +121,39 @@ class DriverController extends Controller
      */
     public function driverInfo(Request $request) //02:25
     {
-        $driver = Driver::
-                                        select('custom_id', 'full_name', 'start_time', 'end_time', 'days')
-                                        ->with([
-                                            'bus' => fn($query) => $query->select('driver_id', 'plate_number', 'route_id'),
-                                            'bus.route' => fn($query) => $query->select('custom_id', 'number')
-                                        ])
-                                        ->where('id', $request->user('driver')->id)
-                                        ->first();
+        $driver = Driver::select('custom_id', 'full_name', 'start_time', 'end_time', 'days')
+                        ->with([
+                            'bus' => fn($query) => $query->select('driver_id', 'plate_number', 'route_id'),
+                            'bus.route' => fn($query) => $query->select('custom_id', 'number')
+                        ])
+                        ->where('id', $request->user('driver')->id)
+                        ->first();
         // info($driver);die;
         return $this->successResponse(DriverInfoResource::make($driver), message: 'Driver Info Fetched Successfully');
+    }
+
+    /**
+     * driver book ticket for whose has not app or not enough points 
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */ 
+    public function driverBookTicket(Request $request)
+    {
+        $driver = Driver::with(['bus:ticket_id,driver_id','bus.ticket:points,custom_id'])
+            ->select('custom_id')
+            ->where('id', $request->user('driver')->id)
+            ->firstOrFail();
+
+        DB::table('driver_ticket')
+            ->where('id',$request->user('driver')->id)
+            ->insert([
+                'ticket_id' => $driver->bus->ticket->custom_id,
+                'driver_id' => $driver->custom_id,
+                'date' => now()->format('Y-m-d'),
+                'time' => now()->format('H:i:s'),
+                'payed' => $driver->bus->ticket->points,
+            ]);
+
+        return $this->successResponse(message: 'Ticket Booked Successfully');
     }
 }
