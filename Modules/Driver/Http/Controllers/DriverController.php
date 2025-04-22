@@ -154,6 +154,11 @@ class DriverController extends Controller
                 'payed' => $driver->bus->ticket->points,
             ]);
 
-        return $this->successResponse(message: 'Ticket Booked Successfully');
+        $PassengersNumber = DB::table('driver_ticket')
+                            ->where('status', 'not_received')
+                            ->where('driver_id', $request->user('driver')->custom_id)
+                            ->count();
+        
+        return $this->successResponse(data: [ "passengersNumbers" => $PassengersNumber], message: 'Ticket Booked Successfully');
     }
 }
