@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Modules\Report\Models\Report;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Modules\Place\Models\Route as ModelsRoute;
@@ -28,4 +29,12 @@ Route::get('check-routes',function()
     ]);
 
     return gettype($collection);
+});
+
+Route::get('/test-cron-job', function () {
+    Report::create([
+        'note' => 'Test cron job',
+        'user_id' => "P-001",
+        'description' => 'test done successfully',
+    ]);
 });
