@@ -6,5 +6,6 @@
     "Ticket": true,
     "Bus": true,
     "Balance": true,
-    "Report": true
+    "Report": true,
+    "Statistics": true
 }
