@@ -4,14 +4,15 @@ namespace Modules\Driver\Http\Controllers;
 
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Modules\Driver\Models\Driver;
+use Modules\Ticket\Models\Ticket;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Modules\Driver\Http\Requests\DriverRequest;
-use Modules\Driver\Transformers\DriverInfoResource;
 use Modules\Driver\Transformers\DriverResource;
-
+use Modules\Driver\Transformers\DriverInfoResource;
 
 class DriverController extends Controller
 {
@@ -139,6 +140,14 @@ class DriverController extends Controller
      */ 
     public function driverBookTicket(Request $request)
     {
+        // $prices = $this->ticketsPrice();
+        $validated = $request->validate([
+            "price" => ['required',
+            Rule::in($this->ticketsPrice()->toArray())
+        ],
+        ]);
+        // info($prices);die;
+
         $driver = Driver::with(['bus:ticket_id,driver_id','bus.ticket:points,custom_id'])
             ->select('custom_id')
             ->where('id', $request->user('driver')->id)
@@ -151,14 +160,52 @@ class DriverController extends Controller
                 'driver_id' => $driver->custom_id,
                 'date' => now()->format('Y-m-d'),
                 'time' => now()->format('H:i:s'),
-                'payed' => $driver->bus->ticket->points,
+                'payed' => $validated['price'],
             ]);
 
-        $PassengersNumber = DB::table('driver_ticket')
-                            ->where('status', 'not_received')
-                            ->where('driver_id', $request->user('driver')->custom_id)
-                            ->count();
+        // $totalAmount = $this->getTotalAmount($request);
         
-        return $this->successResponse(data: [ "passengersNumbers" => $PassengersNumber], message: 'Ticket Booked Successfully');
+        // $PassengersNumber = $this->getNumberOfNonAppPassengers($request);
+        
+        return $this->successResponse(
+                                            message: 'Ticket Booked Successfully');
+    }
+
+    public function ticketsPrice()
+    {
+        $prices = Ticket::distinct()->pluck('points');
+        // $prices = DB::table('tickets')->distinct()->pluck("points")->toArray();
+        info(gettype($prices));
+        return $prices;
+    }
+
+    public function getDriverBookTicket(Request $request)
+    {
+        $totalAmount = $this->getTotalAmount($request);
+        
+        $PassengersNumber = $this->getNumberOfNonAppPassengers($request);
+        
+        return $this->successResponse(data: [
+                                            "passengersNumbers" => $PassengersNumber,
+                                            "TotalAmount" => $totalAmount
+                                            ],
+                                            message: 'Ticket Booked Successfully');
+    }
+
+    public function getNumberOfNonAppPassengers($request)
+    {
+        return DB::table('driver_ticket')
+                    ->where('date', now()->today())
+                    ->where('driver_id', $request->user('driver')->custom_id)
+                    ->count();
+    }
+
+    public function getTotalAmount($request)
+    {
+        return DB::table('driver_ticket')
+                        ->where('driver_id', $request->user('driver')->custom_id)
+                        ->where('driver_id', $request->user('driver')->custom_id)
+                        ->where('date', now()->today())
+                        ->sum('payed');
     }
 }
