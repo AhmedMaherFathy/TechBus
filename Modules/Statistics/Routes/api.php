@@ -14,6 +14,9 @@ use Modules\Statistics\Http\Controllers\StatisticsController;
  *
 */
 
-Route::get('dashboard/statistics/numbers',[StatisticsController::class,'numberOfEmployees']);
-Route::get('dashboard/statistics/chart1',[StatisticsController::class,'usersRegisteredAt']);
-Route::get('dashboard/statistics/chart2',[StatisticsController::class,'getHourlyTicketSales']);
+Route::prefix('dashboard/statistics')->middleware('admin.auth')->group(function(){
+    Route::get('/numbers',[StatisticsController::class,'numberOfEmployees']);
+    Route::get('/chart1',[StatisticsController::class,'usersRegisteredAt']);
+    Route::get('/chart2',[StatisticsController::class,'getHourlyTicketSales']);
+    Route::get('/routes-ids',[StatisticsController::class,'getRouteIds']);
+});

@@ -8,7 +8,10 @@ use Modules\Bus\Models\Bus;
 use Illuminate\Http\Request;
 use Modules\Place\Models\Route;
 use Modules\Driver\Models\Driver;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+
+use function Laravel\Prompts\select;
 
 class StatisticsController extends Controller
 {
@@ -61,32 +64,57 @@ class StatisticsController extends Controller
         return response()->json($result);
     }
 
-    public function getHourlyTicketSales()
-    {
-        $today = Carbon::today()->toDateString();
 
-        $route = Route::with(['buses.ticket.users'] 
-        // => function($query) use ($today) {
-        //     $query->wherePivot('date', $today)
-        //           ->withPivot(['time']); // Explicitly include pivot columns
-        )
-        ->where('custom_id', 'R-001')
-        ->firstOrFail();
-        return response()->json($route);
-            // ->flatMap(function ($bus) {
-            //     return $bus->ticket->users->map(function ($user) {
-            //         return Carbon::parse($user->pivot->time)->format('H:00');
-            //     });
-            // })
-            // ->countBy()
-            // ->map(function ($count, $hour) {
-            //     return [
-            //         'hour' => $hour,
-            //         'tickets_sold' => $count
-            //     ];
-            // })
-            // ->sortKeys()
-            // ->values()
-            // ->toArray();
+    public function getHourlyTicketSales(Request $request)
+    {
+        // Validate user input
+        $validated = $request->validate([
+            'route_id' => 'required|string|exists:routes,custom_id',
+            'date' => 'required|date',
+        ]);
+
+        $routeId = $validated['route_id'];
+        $date = $validated['date']; // Date provided by user
+
+        $route = Route::with('buses:route_id,ticket_id,driver_id')
+            ->where('custom_id', $routeId)
+            ->select('custom_id')
+            ->firstOrFail();
+
+        $tickets = array_column($route->buses->toArray(), 'ticket_id');
+
+        $times1 = DB::table('user_ticket')
+            ->whereIn('ticket_id', $tickets)
+            ->where('date', $date)
+            ->pluck('time');
+
+        $times2 = DB::table('driver_ticket')
+            ->whereIn('ticket_id', $tickets)
+            ->where('date', $date)
+            ->pluck('time');
+
+        $times = $times1->merge($times2);
+        
+        $grouped = $times->map(function ($time) {
+            return Carbon::createFromFormat('H:i:s', $time)->format('H');
+        })
+            ->countBy();
+
+        $fullHours = collect(range(0, 23))->map(function ($hour) use ($grouped) {
+            $formattedHour = str_pad($hour, 2, '0', STR_PAD_LEFT); // 00, 01, 02...
+            return [
+                'hour' => $formattedHour,
+                'count' => $grouped->get($formattedHour, 0),
+            ];
+        });
+
+        return response()->json($fullHours);
+    }
+
+
+    public function getRouteIds()
+    {
+        $routesIds = Route::pluck('custom_id');
+        return $routesIds;
     }
 }
