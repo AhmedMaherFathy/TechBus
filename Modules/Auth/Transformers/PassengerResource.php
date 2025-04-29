@@ -19,7 +19,7 @@ class PassengerResource extends JsonResource
             'lastName' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'points' => $this->balance->points,
+            'points' => $this->balance?->points,
         ];
     }
 }
