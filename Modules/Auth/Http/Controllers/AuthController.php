@@ -222,10 +222,10 @@ class AuthController extends Controller
     public function getAllPassengers()
     {
         $passengers = User::select('id', 'custom_id', 'first_name', 'last_name', 'email', 'phone')
-            ->with(['balance' => function ($query) {
-                $query->select('points', 'user_id');
-            }])
-            ->fastPaginate();
+                            ->with(['balance' => function ($query) {
+                                $query->select('points', 'user_id');
+                            }])
+                            ->paginate();
 
         return $this->paginatedResponse($passengers, PassengerResource::class);
     }
