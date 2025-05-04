@@ -2,18 +2,20 @@
 
 namespace Modules\Notification\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
+use Modules\Driver\Models\Driver;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\Notification\Notifications\TestNotification;
+use Modules\Notification\Notifications\TestFcmNotification;
 
 class NotificationController extends Controller
 {
     use HttpResponse;
-    public function makeNotification(Request $request)
+    public function makeNotification($id)
     {
-        $request->user('driver')->notify(new TestNotification());
+        Driver::find($id)->notify(new TestFcmNotification());
     }
 
     public function getDriverNotifications(Request $request)
@@ -45,4 +47,6 @@ class NotificationController extends Controller
 
         return $this->successResponse(message: "Fcm Token updated successfully");
     }
+
+    
 }

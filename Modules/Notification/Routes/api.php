@@ -14,6 +14,6 @@ use Modules\Notification\Http\Controllers\NotificationController;
  *
 */
 
-Route::get('test/notification',[NotificationController::class,'makeNotification'])->middleware('driver.auth');
+Route::get('test/notification/{id}',[NotificationController::class,'makeNotification']);
 Route::get('mobile/driver/notifications',[NotificationController::class,'getDriverNotifications'])->middleware('driver.auth');
 Route::patch('mobile/driver/update-fcm-token',[NotificationController::class,'updateDriverFcmToken'])->middleware('driver.auth');
