@@ -18,25 +18,31 @@ class NotificationController extends Controller
 
     public function getDriverNotifications(Request $request)
     {
-        $notifications = $request->user('driver')->notifications->map(function ($notification) {
-            return [
-                'data' => $notification->data,
-                'created_at' => $notification->created_at->format('Y-m-d H:i:s'),
-            ];
-        });
-        
-        return $this->successResponse(data:$notifications);
+        $driver = $request->user('driver');
+
+        $notifications = $driver->notifications()
+            ->latest() // Order by newest first
+            ->cursor() // Uses lazy-loading for memory efficiency
+            ->map(function ($notification) {
+                return [
+                    'data' => $notification->data,
+                    'created_at' => $notification->created_at->format('Y-m-d H:i:s'),
+                ];
+            });
+
+        return $this->successResponse(data: $notifications->values());
     }
+
 
     public function updateDriverFcmToken(Request $request)
     {
         $request->validate([
-                'fcm_token'=>'required'
-            ]);
+            'fcm_token' => 'required'
+        ]);
         $request->user('driver')->update([
             'fcm_token' => $request->fcm_token
         ]);
 
-        return $this->successResponse(message:"Fcm Token updated successfully");
+        return $this->successResponse(message: "Fcm Token updated successfully");
     }
 }
