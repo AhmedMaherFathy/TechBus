@@ -9,12 +9,13 @@ use Modules\Ticket\Models\Ticket;
 use Illuminate\Database\Eloquent\Model;
 use CloudinaryLabs\CloudinaryLaravel\MediaAlly;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 
 // use Modules\Driver\Database\Factories\DriverFactory;
 
 class Driver extends Model 
 {
-    use HasApiTokens, HasFactory, MediaAlly;
+    use HasApiTokens, HasFactory, MediaAlly, Notifiable;
 
     /**
      * The attributes that are mass assignable.
