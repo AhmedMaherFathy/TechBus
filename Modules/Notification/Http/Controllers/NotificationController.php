@@ -27,4 +27,16 @@ class NotificationController extends Controller
         
         return $this->successResponse(data:$notifications);
     }
+
+    public function updateDriverFcmToken(Request $request)
+    {
+        $request->validate([
+                'fcm_token'=>'required'
+            ]);
+        $request->user('driver')->update([
+            'fcm_token' => $request->fcm_token
+        ]);
+
+        return $this->successResponse(message:"Fcm Token updated successfully");
+    }
 }

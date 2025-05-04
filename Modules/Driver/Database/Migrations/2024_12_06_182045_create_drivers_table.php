@@ -26,6 +26,7 @@ return new class extends Migration
             $table->json('days')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
+            $table->text('fcm_token')->nullable();
             $table->timestamps();
         });
     }

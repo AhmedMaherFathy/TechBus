@@ -2,6 +2,7 @@
 
 namespace Modules\Driver\Models;
 
+use App\Models\FcmToken;
 use Carbon\Carbon;
 use Modules\Bus\Models\Bus;
 use Laravel\Sanctum\HasApiTokens;
@@ -34,6 +35,7 @@ class Driver extends Model
         'days',
         'start_time',
         'end_time',
+        'fcm_token'
     ];
 
     protected $hidden = ['password'];
@@ -67,5 +69,10 @@ class Driver extends Model
         'custom_id',   // Local key on the tickets table
         'custom_id'    // Local key on the users table
         );
+    }
+
+    public function routeNotificationForFcm()
+    {
+        return $this->fcm_token;
     }
 }
