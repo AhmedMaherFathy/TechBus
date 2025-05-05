@@ -111,10 +111,23 @@ class StatisticsController extends Controller
         return response()->json($fullHours);
     }
 
-
     public function getRouteIds()
     {
         $routesIds = Route::pluck('custom_id');
         return $routesIds;
+    }
+
+    public function ticketsHistory()
+    {
+        $driverTicket = DB::table('driver_ticket')->count();
+        $userTicket = DB::table('user_ticket')->count();
+        $soldTickets = $driverTicket + $userTicket;
+        
+        $validQr = DB::table('tickets')->where('status','valid')->count();
+
+        return response()->json([
+            "soldTickets" => $soldTickets,
+            "validQr" => $validQr,
+        ]);
     }
 }

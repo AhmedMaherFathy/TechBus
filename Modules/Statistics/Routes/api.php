@@ -19,4 +19,5 @@ Route::prefix('dashboard/statistics')->middleware('admin.auth')->group(function(
     Route::get('/chart1',[StatisticsController::class,'usersRegisteredAt']);
     Route::get('/chart2',[StatisticsController::class,'getHourlyTicketSales']);
     Route::get('/routes-ids',[StatisticsController::class,'getRouteIds']);
+    Route::get('/tickets-history',[StatisticsController::class,'ticketsHistory']);
 });
