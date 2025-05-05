@@ -113,8 +113,9 @@ class AuthController extends Controller
                             ])
                             ->where('email', $validated['email'])
                             ->first();
-                            $user['image'] = $user->fetchFirstMedia()['file_url'] ?? null;
-                            $user['image'] = $user['image'] ?: 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1733608099/mspvvthjcuokw7eiyxo6.png';
+        
+            $user['image'] = $user->fetchFirstMedia()['file_url'] ?? null;
+            $user['image'] = $user['image'] ?: 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1733608099/mspvvthjcuokw7eiyxo6.png';
 
             if(!$user){
                 return $this->errorResponse(message: 'Incorrect Email or Password');
