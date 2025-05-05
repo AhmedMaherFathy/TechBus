@@ -13,9 +13,12 @@ use Modules\Notification\Notifications\TestFcmNotification;
 class NotificationController extends Controller
 {
     use HttpResponse;
+
     public function makeNotification($id)
     {
         Driver::find($id)->notify(new TestFcmNotification());
+        
+        return response()->json("done");
     }
 
     public function getDriverNotifications(Request $request)

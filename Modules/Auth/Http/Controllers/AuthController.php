@@ -105,7 +105,7 @@ class AuthController extends Controller
         $guardName = $guard == 'web' ? 'user' : $guard;
 
         if($guardName == 'user'){
-            $user = $model::select('id','custom_id' ,'first_name', 'email','password','email_verified_at') 
+            $user = $model::select('id','custom_id' ,'first_name','last_name', 'email','password','email_verified_at') 
                             ->with([
                                 'balance' => function ($query) {
                                     $query->select('id', 'points', 'user_id'); 
