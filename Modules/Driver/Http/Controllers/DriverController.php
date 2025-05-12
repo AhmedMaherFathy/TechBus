@@ -142,9 +142,7 @@ class DriverController extends Controller
     {
         // $prices = $this->ticketsPrice();
         $validated = $request->validate([
-            "price" => ['required',
-            Rule::in($this->ticketsPrice()->toArray())
-        ],
+            "price" => ['required'],
         ]);
         // info($prices);die;
 
