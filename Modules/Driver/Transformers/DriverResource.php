@@ -28,6 +28,9 @@ class DriverResource extends JsonResource
                 'custom_id' => $this->bus->custom_id,
             ] : null,
             'photo' => $imageUrl ?: 'https://res.cloudinary.com/dnrhne5fh/image/upload/v1733608099/mspvvthjcuokw7eiyxo6.png',
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
+            'days' => json_decode($this->days, true) ?: [],
         ];
     }
 }
