@@ -16,7 +16,11 @@ class RouteController extends Controller
 
     public function index()
     {
-        return $this->paginatedResponse(Route::with('stations')->fastPaginate(),RouteStationResource::class);
+        $routes = Route::with('stations')
+                                        ->searchable(request()->input('search'), ['custom_id', 'name' , 'number'])
+                                        ->fastPaginate();
+
+        return $this->paginatedResponse($routes ,RouteStationResource::class);
     }
 
     public function store(RouteRequest $request)

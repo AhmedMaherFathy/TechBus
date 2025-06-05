@@ -229,6 +229,7 @@ class AuthController extends Controller
                             ->with(['balance' => function ($query) {
                                 $query->select('points', 'user_id');
                             }])
+                            ->searchable(request()->input('search'), ['custom_id', 'phone', 'email'])
                             ->paginate();
 
         return $this->paginatedResponse($passengers, PassengerResource::class);

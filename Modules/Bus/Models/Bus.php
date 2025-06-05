@@ -2,6 +2,7 @@
 
 namespace Modules\Bus\Models;
 
+use App\Traits\Searchable;
 use Modules\Place\Models\Route;
 use Modules\Driver\Models\Driver;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Modules\Ticket\Models\Ticket;
 
 class Bus extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     /**
      * The attributes that are mass assignable.

@@ -32,6 +32,7 @@ class BusController extends Controller
                 $query->select('id', 'custom_id', 'points');
             }
         ])
+            ->searchable(request()->input('search'), ['plate_number', 'custom_id'])
             ->paginate(10);
 
         return $this->paginatedResponse($buses, BusResource::class);

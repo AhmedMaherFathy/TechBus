@@ -20,7 +20,8 @@ class AdminController extends Controller
 
     public function index()
     {
-        $admin = Admin::paginate(10);
+        $admin = Admin::searchable(request()->input('search'), ['phone', 'email', 'custom_id'])
+                        ->paginate(10);
 
         return $this->paginatedResponse($admin, AdminResource::class, message: 'Admin Fetched Successfully');
     }

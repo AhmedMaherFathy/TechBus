@@ -16,7 +16,10 @@ class StationController extends Controller
 
     public function index()
     {
-        $stations = Station::with('zone:id,custom_id,name')->fastPaginate(10);
+        $stations = Station::with('zone:id,custom_id,name')
+                                                        ->searchable(request()->input('search'), ['custom_id', 'name'])
+                                                        ->fastPaginate(10);
+
         return $this->paginatedResponse($stations, StationResource::class);
     }
 
