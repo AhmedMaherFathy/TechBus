@@ -3,6 +3,7 @@
 namespace Modules\Driver\Models;
 
 use App\Models\FcmToken;
+use App\Traits\Searchable;
 use Carbon\Carbon;
 use Modules\Bus\Models\Bus;
 use Laravel\Sanctum\HasApiTokens;
@@ -16,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Driver extends Model 
 {
-    use HasApiTokens, HasFactory, MediaAlly, Notifiable;
+    use HasApiTokens, HasFactory, MediaAlly, Notifiable, Searchable;
 
     /**
      * The attributes that are mass assignable.

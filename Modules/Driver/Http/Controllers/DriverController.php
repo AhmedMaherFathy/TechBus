@@ -23,6 +23,7 @@ class DriverController extends Controller
         $driver = Driver::with([
             'bus' => fn($q) => $q->select('id','custom_id','driver_id'),
             ])
+            ->searchable(request()->input('search'), ['full_name', 'national_id', 'custom_id'])
             ->fastPaginate(10);
 
         return $this->paginatedResponse($driver, DriverResource::class, message: 'driver Fetched Successfully');
