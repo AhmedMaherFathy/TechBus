@@ -8,6 +8,7 @@ use Modules\Place\Models\Zone;
 use App\Http\Controllers\Controller;
 use Modules\Place\Http\Requests\ZoneRequest;
 use Modules\Place\Transformers\ZoneResource;
+use Symfony\Component\Console\Input\Input;
 
 class ZoneController extends Controller
 {
@@ -15,7 +16,9 @@ class ZoneController extends Controller
 
     public function index()
     {
-        $zones = Zone::fastPaginate(10);
+        $zones = Zone::searchable(request()->input('search'), ['custom_id', 'name'])
+                ->fastPaginate(10);
+
         return $this->paginatedResponse($zones, ZoneResource::class);
     }
 
